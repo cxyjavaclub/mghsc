@@ -1,0 +1,92 @@
+<template>
+    <div ref="navBar" class="nav-bar" :class="{'fixed-nav-bar': isFixed}">
+        <div @click="leftClick" class="nav-left">
+            <img :src="leftImgUrl">
+        </div>
+        <div class="nav-center">
+            {{title}}
+        </div>
+        <div @click="rightClick" class="nav-right">
+            <img :src="rightImgUrl">
+        </div>
+    </div>
+</template>
+<script>
+    output = {
+        props:{
+            isShow: {
+                type: Number,
+                default: 1
+            },
+            isFixed: {
+                type: Number,
+                default: 0
+            },
+            title: {
+                type: String,
+                default: '首页'
+            }
+        },
+        data: function () {
+            return {
+                leftImgUrl: '@/img/箭头.png',
+                rightImgUrl: '@/img/首页 (1).png'
+            }
+        },
+        mounted: function () {
+            if(parseInt(this.isShow)) {
+                setTimeout(() => {
+                    this.show();
+                }, 5);
+            }
+        },
+        methods:{
+            leftClick: function () {
+                this.$router.back();
+            },
+            rightClick: function () {
+                location.href = "/";
+            },
+            setTitle: function (v) {
+                this.title = v;
+            },
+            show: function () {
+                this.$refs.navBar.style.display = 'flex';
+            },
+            hide: function () {
+                this.$refs.navBar.style.display = 'none';
+            }
+        }
+    }
+</script>
+<style scoped>
+    .nav-bar {
+        z-index: 10;
+        display: none;
+        height: 44px;
+        line-height: 44px;
+        text-align: center;
+        background-color: #fff;
+        width: 100%;
+    }
+    .fixed-nav-bar{
+        position: fixed;
+        top: 0;
+        border-bottom: 1px solid #eee;
+        box-shadow: 0 1px 1px rgba(100,100,100,.08);
+    }
+    .nav-left {
+        width: 60px;
+    }
+
+    .nav-bar  img{
+        height: 44px;
+    }
+
+    .nav-center {
+        flex: 1;
+    }
+    .nav-right {
+        width: 60px;
+    }
+</style>

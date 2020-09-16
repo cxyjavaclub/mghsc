@@ -1,0 +1,61 @@
+<template>
+    <div class="item">
+        <div class="user">
+            <img :src="user.userBuddha" align="center">
+            <a>
+                <h3>{{user.userName}}</h3>
+                <h6>{{user.userAttr}}</h6>
+            </a>
+        </div>
+    </div>
+</template>
+
+<script>
+        output = {
+            props:{
+                img:String,
+                user:{
+                    type:Object,
+                    default: {
+                            userBuddha:'',
+                            userName:'',
+                            userAttr:''
+                        }
+                },
+            },
+            methods:{
+                setUser: function (obj) {
+                    this.user.userBuddha = obj.userBuddha;
+                    this.user.userName = obj.userName;
+                    this.user.userAttr = obj.created;
+                }
+            }
+        }
+</script>
+
+<style scoped>
+    .item{
+        background-color: #eeeeee;
+    }
+    .user{
+        position: relative;
+    }
+    .user img{
+        width: 80px;
+        height: 80px;
+        margin: 12px;
+        border-radius: 50px;
+    }
+    .user a{
+        position: absolute;
+        top: 10px;
+        left: 110px;
+    }
+    .user h3{
+        font-size: 25px;
+        padding: 10px 0px;
+    }
+    .user h6{
+        font-size: 15px;
+    }
+ </style>

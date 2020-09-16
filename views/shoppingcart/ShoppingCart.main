@@ -1,0 +1,155 @@
+<template>
+   <div class="shopping-cart" style="margin-bottom: 120px;">
+       <div style="display: none;">
+           <m-radio class="radio"></m-radio>
+           <shopping-car></shopping-car>
+           <m-button></m-button>
+       </div>
+       <div m-if="value.length == 0" class="no-cart-box">
+           <img :src="noCartImgUrl">
+           <p>购物车是空的</p>
+       </div>
+       <div class="cart-item" m-for="v in value">
+           <m-radio class="radio"></m-radio>
+           <shopping-car class="cart-message" :goods="v"></shopping-car>
+           <div class="operating">
+               <m-button @click="deleteGoods($dom, v.cartId)"
+                         style="width: 80%; padding: 0; border: none; display: block; float: left; height: 30px; background-color: inherit;"
+                         text="删除">
+               </m-button>
+           </div>
+       </div>
+       <div class="product-settlement-box">
+           <m-radio class="radio"></m-radio>
+           <p style="margin-left: 10px; color: #9b9b9b;">全选</p>
+           <div class="settlement-button-box">
+               <p>合计:</p>
+               <p style="color: red; margin-left: 3px;font-size: 13px;">￥0</p>
+               <m-button style="height: 36px; border: none; color: white; background-color: #ec612a; width: 85px; border-radius: 30px; margin-left: 10px;"
+                         @click="settlementClick"
+                         text="结算"></m-button>
+           </div>
+       </div>
+   </div>
+</template>
+<script>
+    let shoppingCar = input('@/component/content/shoppingCar/shoppingCar.main');
+    let mButton = input('@/component/common/mbutton/mButton.main');
+    let mRadio = input('@/component/common/mradio/MRadio.main');
+
+    output = {
+        components:{
+            shoppingCar:shoppingCar,
+            mButton: mButton,
+            mRadio: mRadio,
+        },
+        data: function () {
+            return {
+                page: 1,
+                limit: 24,
+                total: 200,
+                value: [],
+                noCartImgUrl: '@/img/icon/1598073098841.jpg'
+            }
+        },
+        activated: function () {
+            setTimeout(() => {
+                let show = this.$main.container.get('showTarBar')
+                if(show){
+                    show();
+                }
+            }, 10);
+        },
+        created: function () {
+            this.getData(this.page, this.limit);
+        },
+        methods: {
+            settlementClick: function () {
+                
+            },
+            deleteGoods: function (dom, cartId) {
+                if(cartId || cartId == 0){
+                    let r = confirm("是否删除该条商品信息？");
+                    if (r == true) {
+                        let load = this.$loading();
+                        $.get("/mghsc/cart/del", {cartId: cartId},  (result) => {
+                            if(result.code == 200){
+                                this.$close(load);
+                                $(dom).parent().parent().remove();
+                                alert('删除成功');
+                                location.reload();
+                            }
+                        }, 'json');
+                    }
+                }
+            },
+            getData: function (page, limit) {
+                if(page * limit < this.total){
+                    let load = this.$loading();
+                    $.get("/mghsc/cart/page-data", {page: page, limit: limit},  (result) => {
+                        if(result.code == 200){
+                            let data = result.data;
+                            this.total = data.total;
+                            this.value = data.records;
+                            this.$close(load);
+                            // console.log(data)
+                        }
+                    }, 'json');
+                }
+            }
+        }
+    }
+</script>
+<style scoped>
+    .cart-item{
+        display: flex;
+        align-items: center;
+        background-color: white;
+        overflow: hidden;
+        padding: 10px 0;
+        border-radius: 10px;
+        width: 96%;
+        margin: 8px auto;
+    }
+    .radio{
+        margin-left: 3px;
+    }
+    .cart-item .cart-message{
+        flex: 2;
+    }
+    .cart-item .operating{
+        height: 100px;
+        width: 50px;
+        border-left: 1px solid #9b9b9b;
+        padding-left: 3px;
+        display: flex;
+        align-items: center;
+    }
+    .no-cart-box{
+        text-align: center;
+        color: #9b9b9b;
+    }
+    .no-cart-box > img{
+        width: 150px;
+    }
+
+    .product-settlement-box{
+        position: absolute;
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        border-top: 1px solid #EEE;
+        bottom: 50px;
+        background-color: white;
+        display: flex;
+        padding: 0 10px;
+        align-items: center;
+    }
+    .settlement-button-box{
+        position: absolute;
+        right: 0;
+        padding-right: 10px;
+        display: flex;
+        align-items: center;
+    }
+</style>

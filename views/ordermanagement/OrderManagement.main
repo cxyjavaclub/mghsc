@@ -1,0 +1,127 @@
+<template>
+    <div class="order-management">
+        <div class="fixed-nav-bar-ref" ref="fixedNavBarRef">
+            <nav-bar title="订单详情"></nav-bar>
+            <horizontal-options ref="horizontalOptions" @click="selectedClick"></horizontal-options>
+        </div>
+        <div class="box">
+            <nav-bar title="订单详情"></nav-bar>
+            <horizontal-options ref="horizontalOptions" @click="selectedClick"></horizontal-options>
+        </div>
+        <div class="order-message box">
+            <goods-order ref="goodsOrder" :num="100"></goods-order>
+            <goods-order ref="goodsOrder" :num="1"></goods-order>
+            <p class="order-message-total-price"><span>总价￥199.9</span><span>实付款￥199.9</span></p>
+            <div class="order-message-operating">
+                <span>评价</span>
+                <span>查看物流</span>
+            </div>
+        </div>
+        <div style="height: 2000px;"></div>
+    </div>
+</template>
+<script>
+    let navBar = input('@/component/common/navbar/NavBar.main');
+    let horizontalOptions = input('@/component/common/horizontaloptions/HorizontalOptions.main');
+    let goodsOrder = input('@/component/common/goodsorder/GoodsOrder.main');
+    output = {
+        components:{
+            navBar: navBar,
+            horizontalOptions: horizontalOptions,
+            goodsOrder: goodsOrder,
+        },
+        activated: function () {
+            setTimeout(() => {
+                let show = this.$main.container.get('hideTarBar')
+                if(show){
+                    show();
+                }
+                this.scrollInit();
+
+            }, 10);
+        },
+        deactivated: function () {
+            $(window).unbind('scroll');
+        },
+        created: function () {
+            if (this.$router.query && (this.$router.query.typeNum || this.$router.query.typeNum == 0)) {
+                this.typeNum = this.$router.query.typeNum;
+                setTimeout(() => {
+                    this.$refs.horizontalOptions[0].setItemIndex(this.typeNum);
+                    this.$refs.horizontalOptions[1].setItemIndex(this.typeNum);
+                }, 10)
+            }
+        },
+        methods:{
+            selectedClick: function (index) {
+                this.$router.replace({path: '/order-management', query: {typeNum: index}})
+            },
+            scrollInit: function () {
+                let that = this;
+                $(window).scroll(function () {
+                    let top = $(document).scrollTop();
+                    if(top > 30){
+                        that.$refs.fixedNavBarRef.style.display = 'block';
+                    }else{
+                        that.$refs.fixedNavBarRef.style.display = 'none';
+                    }
+                })
+            }
+        }
+    }
+</script>
+<style scoped>
+    .fixed-nav-bar-ref{
+        position: fixed;
+        top: 0;
+        border-bottom: 1px solid #eee;
+        box-shadow: 0 1px 1px rgba(100,100,100,.08);
+        display: none;
+        width: 100%;
+        z-index: 999999999;
+    }
+
+    .box{
+        margin: 10px auto;
+        border-radius: 10px;
+        overflow: hidden;
+        width: 98%;
+    }
+
+    .order-message{
+        padding: 0 10px;
+        background-color: white;
+    }
+
+    .order-message-total-price{
+        text-align: right;
+        line-height: 30px;
+    }
+
+    .order-message-total-price > span:nth-child(1){
+        color: #9b9b9b;
+        margin-right: 5px;
+        font-size: 14px;
+    }
+
+    .order-message-total-price > span:nth-child(2){
+        font-weight: 500;
+        font-size: 16px;
+    }
+
+    .order-message-operating{
+        text-align: right;
+        margin: 10px 0;
+        color: #9b9b9b;
+    }
+    .order-message-operating > span{
+        display: inline-block;
+        padding: 0 20px;
+        min-width: 100px;
+        line-height: 30px;
+        text-align: center;
+        border: 1px solid #9b9b9b;
+        border-radius: 30px;
+    }
+
+</style>

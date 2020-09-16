@@ -1,0 +1,115 @@
+<template>
+    <div class="goods-order">
+        <div class="message">
+            <img class="img" :src="goods.goodsImg"/>
+            <div class="name" ref="name">
+                <div class="goods-name-set-meal">
+                    <div class="goods-name">
+                        {{goods.goodsName}}
+                    </div>
+                    <div class="set-meal" m-if="goods.setMeal">
+                        {{goods.setMeal}}
+                    </div>
+                </div>
+                <div class="prompt" m-if="goods.prompt">
+                    {{goods.prompt}}
+                </div>
+            </div>
+            <div class="number" ref="number">
+                <p>￥{{goods.goodsPrice}}</p>
+                <p>x{{num}}</p>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    output = {
+        props: {
+            num: {
+                type: Number,
+                default: '1'
+            },
+            goods:{
+                type: Object,
+                default:
+                    {
+                        goodsImg:'@/img/5.jpg',
+                        goodsName:'迷你小模具爱新模具皇冠模具',
+                        goodsPrice:'16',
+                        setMeal: '',
+                        prompt: ''
+                    }
+            },
+        },
+        components:{
+
+        },
+        mounted: function (){
+            setTimeout(() => {
+                this.calculationNameWidth();
+            }, 10)
+        },
+        methods: {
+            calculationNameWidth: function () {
+                this.$refs.name.style.width = this.$refs.name.offsetWidth - this.$refs.number.offsetWidth + 'px';
+            },
+            setNum: function (num) {
+                this.num = num;
+            }
+        }
+    }
+</script>
+<style scoped>
+    .goods-order .message{
+        display: flex;
+        padding: 10px 0;
+    }
+    .goods-order .message .img{
+        width: 100px;
+        height: 100px;
+        border-radius: 8px;
+        flex-shrink: 0;
+    }
+    .goods-order .message .name{
+        flex: 1;
+        padding: 0 5px;
+        position: relative;
+        overflow: hidden;
+    }
+    .goods-order .message .name .goods-name{
+        /*display: -webkit-box;*/
+        /*-webkit-line-clamp: 2;*/
+        /*-webkit-box-orient: vertical;*/
+    }
+
+    .goods-order .message .name .set-meal, .goods-order .message .name .prompt{
+        /*不允许换行*/
+        white-space: nowrap;
+        /*超出的部分隐藏*/
+        overflow: hidden;
+        /*多余的文字变成 “...”*/
+        text-overflow: ellipsis;
+    }
+    .goods-order .message .name .set-meal{
+        background-color: #cccccc;
+        border-radius: 3px;
+        margin: 3px 0;
+        color: white;
+    }
+
+    .goods-order .message .name .prompt{
+        color: red;
+    }
+    .goods-order .message .number p{
+        overflow: hidden;
+
+    }
+    .goods-order .message .number p:nth-child(1){
+        font-size: 14px;
+    }
+    .goods-order .message .number p:nth-child(2){
+        font-size: 13px;
+        text-align: right;
+        color: #9b9b9b;
+    }
+</style>

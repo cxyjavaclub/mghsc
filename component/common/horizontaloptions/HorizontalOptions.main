@@ -1,0 +1,72 @@
+<template>
+    <div class="horizontal-options">
+        <div m-for="(v,index) in item"
+             @click="selectedClick(index)"
+             :class="{selected: index == itemIndex}">
+            <span>{{v}}</span>
+            <span class="line"></span>
+        </div>
+    </div>
+</template>
+<script>
+    output = {
+        props:{
+            itemIndex:{
+                type: Number,
+                default: -1
+            },
+            item:{
+                type: Array,
+                default: [
+                    '全部',
+                    '待付款',
+                    '待发货',
+                    '待收货',
+                    '待评价',
+                ]
+            }
+        },
+        methods:{
+            selectedClick: function (index) {
+                this.itemIndex = index;
+                this.$emit('click', index, this.item[index]);
+            },
+            setItemIndex: function (index) {
+                this.itemIndex = index;
+            }
+        }
+    }
+</script>
+<style scoped>
+    .horizontal-options{
+        display: flex;
+        text-align: center;
+        background-color: white;
+        height: 44px;
+        align-items: center;
+        width: 100%;
+    }
+    .horizontal-options div{
+        flex: 1;
+        height: 100%;
+        line-height: 44px;
+        color: #9b9b9b;
+    }
+
+    .horizontal-options .selected{
+        color: coral;
+    }
+
+    .selected > .line{
+        background-color: coral;
+    }
+
+    .horizontal-options div > .line{
+        display: block;
+        width: 40%;
+        height: 3px;
+        margin: -6px auto 0 auto;
+        border-radius: 5px;
+    }
+
+</style>

@@ -1,0 +1,93 @@
+<template>
+    <div class="shopping">
+        <div class="center">
+            <img @click="imgClick(goods.productId)" :src="goods.productFirstImg"/>
+            <div>
+                <h2 class="goods-name">{{goods.productName}}</h2>
+                <b class="goods-price">￥{{goods.price}}</b>
+            </div>
+            <div class="goods-num">
+                <number-operating @click="numberOperatingClick" :buy-number="goods.productAmount" :cart-id="goods.cartId"></number-operating>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    let numberOperating = input('@/component/common/numberoperating/NumberOperating.main');
+
+    output = {
+        components:{
+            numberOperating: numberOperating,
+        },
+        props:{
+            num:{
+                type: Number,
+                default: 1
+            },
+            goods:{
+                type: Object,
+                default:
+                    {
+                        // cartId: '',
+                        // productFirstImg:'@/img/5.jpg',
+                        // productName:'迷你小模具爱新模具皇冠模具',
+                        // price:'16',
+                    }
+            },
+        },
+        methods:{
+            numberOperatingClick: function (price){
+                this.goods.price = price;
+            },
+            imgClick: function (id) {
+                this.$router.goPath({path: '/goods-details', query: {id: id}})
+            },
+        }
+    }
+</script>
+<style scoped>
+    .shopping{
+        width: 100%;
+        padding: 5px;
+        position: relative;
+        display: flex;
+    }
+    .center{
+        flex: 2;
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+    .center img{
+        min-width: 100px;
+        max-width: 100px;
+        height: 100px;
+        border-radius: 5px;
+    }
+
+    .center > div{
+        height: 100px;
+        padding: 0 5px;
+    }
+
+    .center > div > .goods-name{
+        font-weight: 600;
+        font-size: 18px;
+        height: 80px;
+        overflow: hidden;
+    }
+    .center > div > .goods-price{
+        font-size: 18px;
+        color: red;
+    }
+    .center > .goods-num{
+        position: absolute;
+        display: block;
+        text-align: center;
+        right: 10px;
+        bottom: 0;
+        height: 25px;
+        min-width: 30px;
+    }
+
+</style>

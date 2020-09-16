@@ -1,0 +1,81 @@
+<template>
+    <div class="goods-evaluation">
+        <div class="title">
+            <p class="left" m-text="'商品评价(' + evaluationNum + ')'"></p>
+            <p class="right" m-if="evaluationNum">全部评价</p>
+        </div>
+        <div class="content" m-if="evaluationNum">
+            <user-simple-message :img="value.authorImg"
+                                 :name="value.authorName"
+                                 :date="value.createDate">
+            </user-simple-message>
+            <div class="evaluation-text" style="padding: 5px 0; margin-left: 50px;">
+                {{value.evaluation}}
+            </div>
+        </div>
+        <div m-else class="none-evaluation">
+            <img :src="noneImg"/>
+            <span>没有评价</span>
+        </div>
+    </div>
+</template>
+<script>
+    let userSimpleMessage = input('@/component/common/usersimplemessage/userSimpleMessage.main');
+    output = {
+        props:{
+            value:{
+                type: Object,
+                default: {
+                    authorImg: '@/img/ytpic/H4.JPG',
+                    authorName: '穷哭出声',
+                    createDate: '17小时前',
+                    evaluation: '太强了，特别是多屏协同'
+                }
+            },
+            evaluationNum: {
+                type: Number,
+                default: 0
+            },
+            noneImg:{
+                type: String,
+                default: '@/img/icon/没有评论.png'
+            }
+        },
+        components:{
+            userSimpleMessage: userSimpleMessage
+        },
+        mounted: function () {
+
+        }
+    }
+</script>
+<style scoped>
+    .goods-evaluation .title{
+        padding: 5px 0;
+        display: flex;
+        line-height: 20px;
+    }
+    .goods-evaluation .title > p{
+        flex: 1;
+    }
+
+    .goods-evaluation .title > .right{
+        text-align: right;
+        color: red;
+        font-size: 15px;
+    }
+
+    .goods-evaluation .content{
+        padding: 0 5px;
+    }
+    .none-evaluation{
+    }
+    .none-evaluation > img{
+        width: 50px;
+        height: 50px;
+        vertical-align: middle;
+    }
+    .none-evaluation > span{
+        color: #9b9b9b;
+    }
+</style>

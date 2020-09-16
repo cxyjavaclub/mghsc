@@ -1,0 +1,74 @@
+<template>
+    <div>
+        <nav-bar ref="fixedNavBarRef" title="收藏夹" is-show="0" is-fixed="1"></nav-bar>
+        <nav-bar title="收藏夹" style="margin: 10px auto; border-radius: 10px; overflow: hidden; width: 98%;"></nav-bar>
+        <goods-list ref="goodsList" style="margin: 8px 2%; width: 96%;">
+        </goods-list>
+        <div m-if="itemNum == 0" class="no-favorites-box">
+            <img :src="noFavoritesImgUrl">
+            <p>收藏夹是空的</p>
+        </div>
+    </div>
+</template>
+<script>
+    let goodsList = input('@/component/content/goodslist/goodsList.main');
+    let navBar = input('@/component/common/navbar/NavBar.main');
+    output = {
+        components: {
+            goodsList: goodsList,
+            navBar: navBar,
+        },
+        data: function () {
+            return {
+                itemNum: 0,
+                noFavoritesImgUrl: '@/img/icon/没有订单 (1).png'
+            }
+        },
+        activated: function () {
+            setTimeout(() => {
+                let show = this.$main.container.get('hideTarBar')
+                if(show){
+                    show();
+                }
+                this.scrollInit();
+                let load = this.$loading();
+                $.get("/mghsc/favorites/page-data",  (result) => {
+                    if(result.code == 200){
+                        this.$close(load);
+                        console.log(result)
+                        this.itemNum = result.data.records.length;
+                        this.$refs.goodsList.setItem(result.data.records);
+                    }
+                }, 'json');
+            }, 10);
+        },
+        deactivated: function () {
+            $(window).unbind('scroll');
+        },
+        created: function () {
+
+        },
+        methods:{
+            scrollInit: function () {
+                let that = this;
+                $(window).scroll(function () {
+                    let top = $(document).scrollTop();
+                    if(top > 30){
+                        that.$refs.fixedNavBarRef.show();
+                    }else{
+                        that.$refs.fixedNavBarRef.hide();
+                    }
+                })
+            }
+        }
+    }
+</script>
+<style scoped>
+    .no-favorites-box{
+        text-align: center;
+        color: #9b9b9b;
+    }
+    .no-favorites-box > img{
+        width: 150px;
+    }
+</style>

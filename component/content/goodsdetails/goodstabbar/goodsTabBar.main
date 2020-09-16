@@ -1,0 +1,107 @@
+<template>
+    <div class="goods-tab-bar">
+        <div class="icon-operating">
+            <tab-bar-item ref="item" m-for="(v, index) in tabs"
+                          @selected="tabBarItemClick(index)"
+                          :url="v.url"
+                          disabled="1"
+                          :active-url="v.activeUrl"
+                          :if-selected="index === 1 && isFavorites"
+                          :text="v.text">
+            </tab-bar-item>
+        </div>
+        <div class="button-operating">
+            <button class="button" @click="addCart">加入购物车</button>
+            <button class="button" @click="goodsBuy">马上购买</button>
+        </div>
+    </div>
+</template>
+<script>
+    let mButton = input('@/component/common/mbutton/mButton.main');
+    let tabBarItem = input('@/component/common/tabbar/TabBarItem.main');
+    output = {
+        props:{
+            isFavorites:{
+                type: Boolean,
+                default: false
+            },
+            tabs: {
+                type: Array,
+                default: [
+                    {
+                        url: '@/img/icon/客服.png',
+                        activeUrl: '@/img/icon/客服.png',
+                        text: '客服'
+                    },
+                    {
+                        url: '@/img/icon/收藏.png',
+                        activeUrl: '@/img/icon/收藏 (1).png',
+                        text: '收藏'
+                    }
+                ]
+            }
+        },
+        components:{
+            mButton: mButton,
+            tabBarItem: tabBarItem,
+        },
+        methods: {
+            setFavorites: function (flag) {
+                if(flag){
+                    this.$refs.item[1].selected();
+                }else {
+                    this.$refs.item[1].lostSelected();
+                }
+            },
+            tabBarItemClick: function (index) {
+                let ref = this.$refs.item;
+                if(index === 0){
+                    this.$emit('customerService');
+                }else if(index === 1){
+                    this.$emit('favorites');
+                }
+            },
+            addCart: function () {
+                this.$emit('addCart')
+            },
+            goodsBuy: function () {
+                this.$emit('goodsBuy')
+            }
+        }
+    }
+</script>
+<style scoped>
+    .goods-tab-bar{
+        height: 50px;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+        border-top: 1px solid #dcdfe6;
+        display: flex;
+    }
+
+    .icon-operating{
+        display: flex;
+        width: 120px;
+        text-align: center;
+    }
+    .button-operating{
+        flex: 2;
+        display: flex;
+    }
+    .button-operating > .button{
+        display: block;
+        flex: 1;
+        white-space: nowrap;
+        background: #fff;
+        border: none;
+        border-left: 1px solid #dcdfe6;
+        color: #606266;
+        text-align: center;
+        outline: none;
+        transition: .1s;
+        font-weight: 500;
+    }
+</style>

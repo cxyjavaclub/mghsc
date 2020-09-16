@@ -1,0 +1,213 @@
+<template>
+    <div class="goods-details">
+        <nav-bar ref="fixedNavBarRef" title="商品详情" is-show="0" is-fixed="1"></nav-bar>
+        <nav-bar title="商品详情" style="margin: 10px auto; border-radius: 10px; overflow: hidden; width: 98%;"></nav-bar>
+        <div style="border-radius: 10px; overflow: hidden; width: 98%; margin: 10px auto;">
+            <swiper ref="swiper" img-height="300" index-mode="1"></swiper>
+        </div>
+        <div class="goods-price-name box">
+            <goods-price ref="goodsPrice" price="" expired-price=""></goods-price>
+            <goods-name ref="goodsName" name=""></goods-name>
+        </div>
+
+        <div class="goods-title-value box">
+            <goods-title-value title="运费" value="免运费"></goods-title-value>
+        </div>
+
+        <div class="goods-title-value box">
+            <goods-title-value title="月销" value="0"></goods-title-value>
+        </div>
+
+        <div class="goods-title-value box">
+            <goods-title-value title="发货地" value="苏州昆山"></goods-title-value>
+        </div>
+
+        <div class="box">
+            <goods-evaluation></goods-evaluation>
+        </div>
+
+        <divide-bar></divide-bar>
+        <div class="goods-details-content box" m-text="descript">
+
+        </div>
+        <goods-tab-bar ref="goodsTabBar" @customer-service="customerService"
+                       @favorites="favorites"
+                       @add-cart="addCart"
+                       @goods-buy="goodsBuy">
+        </goods-tab-bar>
+    </div>
+</template>
+<script>
+    let swiper = input('@/component/content/swiper/MySwiPer.main');
+    let goodsPrice = input('@/component/content/goodsdetails/goodsprice/goodsPrice.main');
+    let goodsName = input('@/component/content/goodsdetails/goodsname/goodsName.main');
+    let goodsTitleValue = input('@/component/content/goodsdetails/goodstitlevalue/goodsTitleValue.main');
+    let goodsEvaluation = input('@/component/content/goodsdetails/goodsevaluation/goodsEvaluation.main');
+    let shopMessage = input('@/component/common/shopmessage/shopMessage.main');
+    let mButton = input('@/component/common/mbutton/mButton.main');
+    let divideBar = input('@/component/common/dividebar/divideBar.main');
+    let goodsTabBar = input('@/component/content/goodsdetails/goodstabbar/goodsTabBar.main');
+    let navBar = input('@/component/common/navbar/NavBar.main');
+    output = {
+        components: {
+            swiper: swiper,
+            goodsPrice: goodsPrice,
+            goodsName: goodsName,
+            goodsTitleValue: goodsTitleValue,
+            goodsEvaluation: goodsEvaluation,
+            shopMessage: shopMessage,
+            mButton: mButton,
+            divideBar: divideBar,
+            goodsTabBar: goodsTabBar,
+            navBar: navBar,
+        },
+        data: function () {
+            return {
+                descript: '',
+                productId: '',
+                isFavorites: false,
+                fixedNavBarShow: false,
+                product: {
+                    // bazaarPrice: 299,
+                    // categoryId: 29,
+                    // categoryName: "食品",
+                    // descript: "",
+                    // price: 199.9,
+                    // productId: 4,
+                    // productImg: '',
+                    // productName: ''
+                }
+            }
+        },
+        created: function () {
+            if (this.$router.query && this.$router.query.id) {
+                this.id = this.$router.query.id;
+                let load = this.$loading();
+                $.get('/mghsc/product/id-details-data', {productId: this.id}, (result) => {
+                    if (result.code == 200) {
+                        let data = result.data;
+                        //写入轮播图
+                        this.$refs.swiper.setSwiperDataArray(data.productImg);
+                        //写入价格
+                        this.$refs.goodsPrice.setData(data.price, data.bazaarPrice);
+                        //写入商品名
+                        this.$refs.goodsName.setName(data.productName);
+                        //写入商品详情
+                        this.descript = data.descript;
+                        this.productId = data.productId;
+                        //写入是否加入收藏
+                        this.isFavorites = data.isFavorites;
+                        this.$refs.goodsTabBar.setFavorites(this.isFavorites);
+                        this.$close(load);
+                    }
+                }, 'json');
+            }else{
+                window.location.href = '/';
+            }
+        },
+        activated: function () {
+            setTimeout(() => {
+                let show = this.$main.container.get('hideTarBar')
+                if(show){
+                    show();
+                }
+                this.scrollInit();
+            }, 10);
+        },
+        deactivated: function () {
+            $(window).unbind('scroll');
+        },
+        mounted: function () {
+
+        },
+        methods: {
+            customerService: function () {
+
+            },
+            favorites: function () {
+                if(this.isFavorites){
+                    if (this.productId) {
+                        let load = this.$loading();
+                        $.get('/mghsc/favorites/product-id-del', {productId: this.productId}, (result) => {
+                            if (result.code == 200) {
+                                this.$close(load);
+                                alert('成功取消收藏');
+                                this.isFavorites = false;
+                                this.$refs.goodsTabBar.setFavorites(this.isFavorites)
+                            }
+                        }, 'json');
+                    }
+                }else {
+                    if (this.productId) {
+                        let load = this.$loading();
+                        $.get('/mghsc/favorites/add', {productId: this.productId}, (result) => {
+                            if (result.code == 200) {
+                                this.$close(load);
+                                alert('成功收藏');
+                                this.isFavorites = true;
+                                this.$refs.goodsTabBar.setFavorites(this.isFavorites)
+                            }
+                        }, 'json');
+                    }
+                }
+            },
+            addCart: function () {
+                if(this.productId) {
+                    let load = this.$loading();
+                    $.get("/mghsc/cart/add-or-update", {productId: this.productId}, (result) => {
+                        if (result.code == 200) {
+                            this.$close(load);
+                            alert('成功加入购物车');
+                        }
+                    }, 'json');
+                }
+            },
+            goodsBuy: function () {
+                // this.$router.goPath({path: '/goods-buy'})
+            },
+            scrollInit: function () {
+                let that = this;
+                $(window).scroll(function () {
+                    let top = $(document).scrollTop();
+                    if(top > 30){
+                        that.$refs.fixedNavBarRef.show();
+                    }else{
+                        that.$refs.fixedNavBarRef.hide();
+                    }
+                })
+            }
+        }
+    }
+</script>
+<style scoped>
+    @import '@/css/wangEditorProvide.css';
+
+    .goods-details {
+        margin-bottom: 60px;
+    }
+
+    .goods-details > .box {
+        padding: 20px;
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        width: 98%;
+        margin: 10px auto;
+    }
+
+    .goods-price-name {
+
+    }
+
+    .shop-message {
+        display: flex;
+    }
+
+    .shop-message .shop {
+        flex: 2;
+    }
+
+    .shop-message .operating {
+        width: 50px;
+    }
+</style>

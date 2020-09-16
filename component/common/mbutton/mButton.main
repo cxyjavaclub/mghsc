@@ -1,0 +1,35 @@
+<template>
+    <button @click="buttonClick" class="m-button">{{text}}</button>
+</template>
+<script>
+    output = {
+        props:{
+            text:{
+                type: String,
+                default: '按钮'
+            }
+        },
+        methods:{
+            buttonClick: function () {
+                this.$emit('click', this);
+            }
+        }
+    }
+</script>
+<style scoped>
+    .m-button{
+        display: inline-block;
+        line-height: 1;
+        white-space: nowrap;
+        background: #fff;
+        border: 1px solid #dcdfe6;
+        color: #606266;
+        text-align: center;
+        outline: none;
+        transition: .1s;
+        font-weight: 500;
+        padding: 12px 20px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+</style>

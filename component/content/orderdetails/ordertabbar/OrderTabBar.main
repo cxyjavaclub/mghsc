@@ -1,0 +1,67 @@
+<template>
+    <div class="order-tab-bar">
+        <span class="span">共<span>{{num}}</span>件，</span>
+        <span class="total">合计:</span>
+        <span class="price">￥{{price}}</span>
+        <button class="button" @click="submitOrder">提交订单</button>
+    </div>
+</template>
+<script>
+    output = {
+        props: {
+            num: {
+                type: Number,
+                default: '1'
+            },
+            price: {
+                type: Number,
+                default: '182.00'
+            }
+        },
+        methods:{
+            submitOrder: function () {
+                this.$emit('submitOrder');
+            },
+            setNum: function (num) {
+                this.num = num;
+            },
+            setPrice: function (price) {
+                this.price = price;
+            }
+        }
+    }
+</script>
+<style scoped>
+    .order-tab-bar{
+        height: 50px;
+        position: fixed;
+        z-index: 20000;
+        bottom: 0;
+        width: 100%;
+        background-color: white;
+        border-top: 1px solid #dcdfe6;
+        line-height: 50px;
+        display: flex;
+        justify-content: flex-end;
+    }
+    .order-tab-bar .span{
+        font-size: 13px;
+        color: #9b9b9b;
+    }
+    .order-tab-bar .price{
+        font-size: 20px;
+        color: red;
+    }
+
+    .order-tab-bar .button{
+        display: inline-block;
+        margin-left: 8px;
+        background: #fff;
+        border: none;
+        border-left: 1px solid #dcdfe6;
+        color: #606266;
+        text-align: center;
+        outline: none;
+        padding: 12px 20px;
+    }
+</style>

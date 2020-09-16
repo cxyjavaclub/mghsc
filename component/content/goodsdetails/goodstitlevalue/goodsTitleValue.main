@@ -1,0 +1,34 @@
+<template>
+    <div class="goods-title-value">
+        <p class="label">{{title}}</p>
+        <p class="price">{{value}}</p>
+    </div>
+</template>
+<script>
+    output = {
+        props:{
+            title: {
+                type: String,
+                default: ''
+            },
+            value: {
+                type: String,
+                default: ''
+            }
+        }
+    }
+</script>
+<style scoped>
+    .goods-title-value{
+        display: flex;
+        line-height: 25px;
+    }
+    .goods-title-value .label{
+        color: #9b9b9b;
+        padding-right: 15px;
+    }
+
+    .goods-title-value .price{
+        font-size: 15px;
+    }
+</style>

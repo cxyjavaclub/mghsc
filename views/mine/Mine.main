@@ -1,0 +1,75 @@
+<template>
+    <div>
+        <order ref="order"></order>
+        <my-order></my-order>
+        <div style="margin: 10px 5px; border-radius: 15px; overflow: hidden;">
+            <m-text class="m-text"
+                    @click="favoritesClick"
+                    text="收藏夹">
+            </m-text>
+            <m-text class="m-text"
+                      @click="addressManagement"
+                      text="地址管理">
+            </m-text>
+            <m-text class="m-text"
+                    style="border-bottom: none;"
+                    text="关于">
+            </m-text>
+        </div>
+    </div>
+</template>
+<script>
+    let myOrder = input('@/component/content/myorder/myOrder.main');
+    let order = input('@/component/common/order/order.main');
+    let mText = input('@/component/common/mtext/mText.main');
+    output = {
+        components:{
+            myOrder:myOrder,
+            order:order,
+            mText:mText,
+        },
+        activated: function () {
+            setTimeout(() => {
+                let show = this.$main.container.get('showTarBar')
+                if(show){
+                    show();
+                }
+            }, 10);
+        },
+        created: function () {
+            let load = this.$loading();
+            $.get("/mghsc/user/login-user-msg",  (result) => {
+                if(result.code == 200){
+                    let data = result.data;
+                    this.$refs.order.setUser(data);
+                    this.$close(load);
+                }
+            }, 'json');
+        },
+        mounted: function () {
+
+        },
+        methods: {
+            favoritesClick: function () {
+                this.$router.goPath('/favorites-list');
+            },
+            addressManagement: function () {
+                this.$router.goPath('/address-management');
+            }
+        }
+    }
+</script>
+<style scoped>
+
+.m-text{
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-bottom: 1px solid #dcdfe6;
+    font-size: 18px;
+    line-height: 50px;
+    background: #fff;
+    padding-left: 10px;
+}
+
+</style>

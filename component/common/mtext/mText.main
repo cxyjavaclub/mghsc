@@ -1,0 +1,32 @@
+<template>
+    <span @click="spanClick" class="m-text">
+        {{text}}
+    </span>
+</template>
+<script>
+    output = {
+        props: {
+            text: {
+                type: String,
+                default: ''
+            }
+        },
+
+        methods:{
+            spanClick: function () {
+                this.$emit('click', this);
+            },
+            setText: function (s) {
+                this.text = s;
+            }
+        }
+    }
+</script>
+<style scoped>
+    .m-text{
+        display: inline-block;
+        white-space: nowrap;
+        transition: .1s;
+        font-weight: 500;
+    }
+</style>

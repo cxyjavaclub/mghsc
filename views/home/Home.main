@@ -1,0 +1,108 @@
+<template>
+    <div style="position: relative;background-color: #f0f0f0; margin-bottom: 50px;">
+<!--        <div style="overflow: hidden; width: 100%; margin: 10px auto;">-->
+<!--            <search></search>-->
+<!--        </div>-->
+<!--            <horizontal-navigation style="margin: 10px 0;"></horizontal-navigation>-->
+        <div style="border-radius: 10px; overflow: hidden; width: 98%; margin: 5px auto 0 auto;">
+            <swiper ref="swiper"></swiper>
+        </div>
+<!--            <goods-list style="margin: 15px 2%; width: 96%;"></goods-list>-->
+        <div>
+            <content-portion m-for="v in contentPortion" :title="v.title" :products="v.products"></content-portion>
+        </div>
+    </div>
+</template>
+<script>
+    let swiper = input('@/component/content/swiper/MySwiPer.main');
+    let test = input('@/component/content/test/Test.main');
+    let HorizontalNavigation = input('@/component/content/horizontalnavigation/HorizontalNavigation.main');
+    let VerticalNavigation = input('@/component/content/verticalnavigation/VerticalNavigation.main');
+    let scroll = input('@/component/common/scroll/Scroll.main');
+    let contentPortion = input('@/component/content/contentPortion/contentPortion.main');
+    let search = input('@/component/content/homesearch/search.main')
+    let MySegment = input('@/component/content/segment/MySegment.main');
+    let goodsList = input('@/component/content/goodslist/goodsList.main');
+
+    output = {
+        components:{
+            swiper: swiper,
+            test: test,
+            HorizontalNavigation: HorizontalNavigation,
+            VerticalNavigation: VerticalNavigation,
+            scroll: scroll,
+            contentPortion:contentPortion,
+            search:search,
+            MySegment:MySegment,
+            goodsList:goodsList,
+        },
+        data: function () {
+            return {
+                contentPortion: [1]
+            }
+        },
+        created: function () {
+            let load = this.$loading();
+            $.get("/mghsc/page/conf", {pageType: 'home'},  (result) => {
+                if(result.code == 200){
+                    let data = result.data;
+                    let configObj = JSON.parse(data.configJson);
+                    this.$refs.swiper.setSwiperData(configObj.carousel);
+                    if(configObj.productConfigs){
+                        this.contentPortion = configObj.productConfigs;
+                    }
+                    this.$close(load);
+                }
+            }, 'json');
+        },
+        activated: function () {
+            setTimeout(() => {
+                let show = this.$main.container.get('showTarBar')
+                if(show){
+                    show();
+                }
+            }, 10);
+        },
+        mounted: function () {
+
+        },
+        methods:{
+            divClick: function (e, t) {
+                console.log(t)
+                console.log(e)
+                e.stopPropagation();
+                e.preventDefault();
+            },
+            arrivalsTop: function (y, t) {
+                console.log('top')
+            },
+            arrivalsBottom: function (y, t) {
+                console.log('bottom')
+            },
+            arrivalsLeft: function () {
+                console.log('left')
+            },
+            arrivalsRight: function () {
+                console.log('right')
+            },
+            exceedLeftSide: function (y) {
+                if(y > 100){
+                    console.log('刷新')
+                }
+            },
+            exceedRightSide: function (x, obj) {
+
+            },
+            mouseupFun: function (x, y, x1, y1, obj) {
+                if(x < -100){
+                    obj.externalSetTranslateXY(300, -obj.containerWidth, obj.translateY);
+                    setTimeout(() => {
+                        this.$router.goPath('/community');
+                    }, 300)
+                }
+            }
+        }
+    }
+</script>
+<style scoped>
+</style>

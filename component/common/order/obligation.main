@@ -1,0 +1,165 @@
+<template>
+    <div class="obligation">
+        <div class="box" m-for="v in box" :box="v">
+            <div class="top">
+                <a>{{v.text}}</a>
+                <a><img :src="v.img"/></a>
+                <p>{{v.text1}}</p>
+            </div>
+            <div class="center">
+                <img :src="v.img1"/>
+                <div class="text">
+                    <a>{{v.center}}</a>
+                    <a>{{v.center1}}</a>
+                    <p>{{v.center2}}</p>
+                </div>
+            </div>
+            <div class="money">
+                <a>{{v.money}}</a>
+                <a>{{v.money1}}</a>
+                <a>{{v.money2}}</a>
+            </div>
+            <div class="bottom">
+                <a>{{v.bottom}}</a>
+                <a>{{v.bottom1}}</a>
+                <a>{{v.bottom2}}</a>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    output = {
+        props:{
+            img:String,
+            img1:String,
+            box:{
+                type:Array,
+                default:[
+                    {
+                        text:'某牌旗舰店',
+                        img:'img/下一个.png',
+                        text1:'买家已付款',
+                        //内容部分
+                        img1:'img/12.jpg',
+                        center:'【大标题】的开发一发儿与瑞麒有图有投入和干预的',
+                        center1:'【副标题】好多衣服干预日嘎嘎哈药',
+                        center2:'七天无理由退货',
+                    //    价钱部分
+                        money:'总价￥ 69.00',
+                        money1:'优惠￥ 1.38',
+                        money2:'实付款￥ 69.00',
+                    //    底部内容
+                        bottom:'挑选服务',
+                        bottom1:'查看物流',
+                        bottom2:'评价'
+                    },
+                    {
+                        text:'某牌旗舰店',
+                        img:'img/下一个.png',
+                        text1:'买家已付款',
+                        //内容部分
+                        img1:'img/12.jpg',
+                        center:'【大标题】的开发一发儿与瑞麒有图有投入和干预的',
+                        center1:'【副标题】好多衣服干预日嘎嘎哈药',
+                        center2:'七天无理由退货',
+                        //    价钱部分
+                        money:'总价￥ 69.00',
+                        money1:'优惠￥ 1.38',
+                        money2:'实付款￥ 69.00',
+                        //    底部内容
+                        bottom:'挑选服务',
+                        bottom1:'查看物流',
+                        bottom2:'评价'
+                    }
+                ]
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    .obligation{
+        background-color: #eeeeee;
+    }
+    .box{
+        width: 96%;
+        margin: 10px auto;
+        height: 280px;
+        border-radius: 15px;
+        position: relative;
+        background-color: white;
+    }
+    .top{
+        padding: 10px;
+    }
+    .top img{
+        height: 12px;
+    }
+    .top p{
+        float: right;
+        font-size: 10px;
+        color: darkorange;
+    }
+    .center{
+        position: relative;
+    }
+    .center img{
+        height: 120px;
+        border-radius: 15px;
+        padding: 10px;
+    }
+    .text{
+        height: 100px;
+        width: 165px;
+        position: absolute;
+        top: 10px;
+        left: 120px;
+    }
+    .text a:first-child{
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        font-weight: 600;
+    }
+    .text a:nth-of-type(2){
+        font-size: 12px;
+        color: #999999;
+        padding: 5px 0;
+    }
+    .text p{
+        font-size: 5px;
+        width: 90px;
+        background-color: #fdf1ed;
+        border-radius: 5px;
+        color: #ec612a;
+    }
+    .money{
+        position: absolute;
+        right: 20px;
+        bottom: 60px
+    }
+    .money a{
+        font-size: 12px;
+        color: #999999;
+    }
+    .money a:last-child{
+        color: black;
+    }
+    .bottom{
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+    }
+    .bottom a{
+        border: 1px solid #cccccc;
+        border-radius: 15px;
+        padding: 4px 15px;
+        color: #666666;
+    }
+    .bottom a:last-child{
+        border: 1px solid #ec612a;
+        color: #ec612a;
+    }
+</style>

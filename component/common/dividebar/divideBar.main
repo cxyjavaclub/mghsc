@@ -1,0 +1,57 @@
+<template>
+    <!--分割条-->
+    <div class="divide-bar">
+        <span class="line"></span>
+        <div class="content">
+            <img m-if="img" :src="img"/>
+            <p>{{text}}</p>
+        </div>
+        <span class="line"></span>
+    </div>
+</template>
+<script>
+    output = {
+        props: {
+            img: {
+                type: String,
+                default: '@/img/icon/图片-产品详情.png'
+            },
+            text: {
+                type: String,
+                default: '详情'
+            }
+        }
+    }
+</script>
+<style scoped>
+    .divide-bar{
+        height: 36px;
+        padding: 8px 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .divide-bar > .line{
+        display: inline-block;
+        width: 45px;
+        height: 1px;
+        background-color: #999999;
+    }
+    .divide-bar > .content{
+        display: inline-block;
+        padding: 0 5px;
+        color: #9b9b9b;
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+    .divide-bar > .content > img{
+        height: 18px;
+        width: 20px;
+    }
+
+    .divide-bar > .content > p{
+        padding-left: 3px;
+        font-size: 18px;
+    }
+</style>

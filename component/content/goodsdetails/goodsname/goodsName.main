@@ -1,0 +1,26 @@
+<template>
+    <div class="goods-name">
+        <p class="name">{{name}}</p>
+    </div>
+</template>
+<script>
+    output = {
+        props: {
+            name: {
+                type: String,
+                default: ''
+            },
+        },
+        methods:{
+            setName: function (name) {
+                this.name = name;
+            }
+        }
+    }
+</script>
+<style scoped>
+    .goods-name > .name{
+        font-size: 18px;
+        text-indent: 3px;
+    }
+</style>

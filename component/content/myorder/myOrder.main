@@ -1,0 +1,104 @@
+<!--我的订单栏-->
+<template>
+    <div class="set">
+        <div class="box">
+            <div class="top">
+                <h5>我的工具</h5>
+            </div>
+            <div class="bottom">
+                <div class="item" m-for="(v, index) in item" @click="itemClick(index)">
+                    <p>
+                        <img :src="v.img" :style="{width: imgWidth + 'px' }">
+                    <h5>{{v.text}}</h5>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    output = {
+        props:{
+            img:String,
+            item:{
+                type:Array,
+                default:[
+                    {
+                        img:'@/img/set/fk1.png',
+                        text:'待付款'
+                    },
+                    {
+                        img:'@/img/set/fh4.png',
+                        text:'待发货'
+                    },
+                    {
+                        img:'@/img/set/sh.png',
+                        text:'待收货'
+                    },
+                    {
+                        img:'@/img/set/pj.png',
+                        text:'评价'
+                    },
+                    {
+                        img:'@/img/set/th.png',
+                        text:'退款/售后'
+                    }
+                ]
+            },
+            imgWidth:{
+                type:Number,
+                default: 30
+            },
+            bottomHeight:{
+                type:Number,
+                default: 50
+            }
+        },
+        methods:{
+            itemClick: function (index) {
+                this.$router.goPath({path: '/order-management', query: {typeNum: index + 1}})
+            }
+        }
+    }
+</script>
+<style scoped>
+    .box{
+        width: 97%;
+        margin: 0 auto;
+    }
+    .top{
+        height: 34px;
+        line-height: 34px;
+        border-radius: 15px 15px 0px 0;
+        background-color: #ffffff;
+        border-bottom: 1px solid #a8a8a8;
+    }
+    .top h5{
+        text-align: left;
+        padding-left: 15px;
+    }
+
+    .top img{
+        width: 35px;
+        margin: 0 0px 0 15px;
+    }
+    .bottom{
+        display: flex;
+        background-color: #ffffff;
+        border-radius: 0px 0px 15px 15px;
+        justify-content: center;
+        align-items: center;
+    }
+    .bottom .item{
+        flex: 1;
+        text-align: center;
+    }
+    .item{
+        margin: 5% 0;
+        white-space: nowrap;
+    }
+    .item p{
+        text-align: center;
+    }
+</style>

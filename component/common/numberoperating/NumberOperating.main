@@ -1,0 +1,73 @@
+<template>
+    <div class="number-operating">
+        <span class="less" @click="lessFun">-</span>
+        <span class="value">{{buyNumber}}</span>
+        <span class="plus" @click="plusFun">+</span>
+    </div>
+</template>
+<script>
+    output = {
+        props:{
+            buyNumber:{
+                type: Number,
+                default: 1
+            },
+            cartId:{
+                type: Number,
+                default: 1
+            }
+        },
+        methods:{
+            lessFun: function () {
+                let num = this.buyNumber - 1;
+                if(num <= 0){
+                    alert('不能再减了');
+                }else{
+                    this.updateData(num);
+                }
+            },
+            plusFun: function () {
+                let num = this.buyNumber + 1;
+                this.updateData(num);
+            },
+            updateData: function (num) {
+                if(this.cartId) {
+                    $.get("/mghsc/cart/update-num", {cartId: this.cartId, num: num}, (result) => {
+                        if (result.code == 200) {
+                            this.buyNumber = num;
+                            this.$emit('click', result.msg);
+                        }
+                    }, 'json');
+                }
+            }
+        }
+    }
+</script>
+<style scoped>
+    .number-operating{
+        display: flex;
+    }
+
+    .number-operating > span{
+        text-align: center;
+    }
+    .number-operating .less, .number-operating .plus{
+        width: 20px;
+    }
+    .number-operating .less{
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+        border: 1px solid #9b9b9b;
+    }
+    .number-operating .value{
+        border-top: 1px solid #9b9b9b;
+        border-bottom: 1px solid #9b9b9b;
+        min-width: 30px;
+        padding: 0 10px;
+    }
+    .number-operating .plus{
+        border: 1px solid #9b9b9b;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+</style>

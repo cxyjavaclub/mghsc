@@ -1,0 +1,225 @@
+<template>
+    <div @touchstart="touchstartFun"
+         @touchmove="touchmoveFun"
+         @touchend="touchendFun"
+         class="my-swi-per"
+         :style="{width: width + 'px'}">
+
+        <div ref="imgContainer" class="img-container" :style="{width: width * (swiperData.length + 2) + 'px'}">
+            <a m-for="v in swiperData" :href="v.link"><img :src="v.src"  :style="{width: width + 'px', height: imgHeight + 'px'}" @click="imgClick(v.value)"></a>
+        </div>
+        <div class="img-index-container" m-if="indexMode == 0">
+            <p m-for="v in swiperData.length" :style="{backgroundColor: v === currentIndex ? 'red' : 'rgba(255, 255, 255, 0.1)'}"></p>
+        </div>
+        <div class="img-index-container1" m-text="(currentIndex == 0 ? length : currentIndex > length ? 1 : currentIndex) + '/' + length" m-else>
+        </div>
+    </div>
+</template>
+<script>
+    let runTransition = input('@/utils/animate.js');
+    output = {
+        props:{
+            swiperData: {
+                type: Array,
+                default:[
+                    // {
+                    //     src: '',
+                    //     link: '',
+                    // }
+                ]
+            },
+            indexMode:{
+                type: Number,
+                default: 0
+            },
+            imgWidth: {
+                type: Number,
+                default: '100%'
+            },
+            imgHeight: {
+                type: Number,
+                default: 200
+            },
+            transitionTime: {
+                type: Number,
+                default: 500
+            },
+            stopTime:{
+                type: Number,
+                default: 3000
+            },
+            weights:{
+                type: Number,
+                default: 0.3
+            }
+        },
+        data: function(){
+            return {
+                marginLeft: 0,
+                currentIndex: 1,
+                width: 500,
+                length: 0
+            }
+        },
+        created: function () {
+            this.length = this.swiperData.length;
+            this.offsetWidth = document.body.offsetWidth;
+        },
+        mounted: function () {
+            this.init();
+        },
+        methods: {
+            init: function () {
+                this.stopMobile();
+                //计算宽度
+                if(this.imgWidth.constructor === String){
+                    let index = this.imgWidth.search('%');
+                    if(index != (-1)){
+                        this.width = parseInt(this.offsetWidth / 100 * parseInt(this.imgWidth.substring(0, index)) + '');
+                    }else{
+                        this.width = parseInt(this.imgWidth);
+                    }
+                }
+                let imgContainer = this.$refs['imgContainer'];
+                let children = imgContainer.children;
+                if(children.length > 1){
+                    imgContainer.insertBefore(children[children.length - 1].cloneNode(true), children[0]);
+                    imgContainer.appendChild(children[1].cloneNode(true));
+                    this.mobileMarginLeft(-this.width);
+                    this.startMobile();
+                }
+            },
+            setSwiperData: function (obj) {
+                this.swiperData = obj.msg;
+                this.length = this.swiperData.length;
+                if(obj.height){
+                    this.imgHeight = obj.height;
+                }
+                this.init();
+            },
+            setSwiperDataArray: function (arr, height) {
+                let arrObj = [];
+                for(let a of arr){
+                    arrObj.push({
+                        src: a,
+                        link: 'javaScript:void(0);'
+                    })
+                }
+                this.swiperData = arrObj;
+                this.length = this.swiperData.length;
+                if(height){
+                    this.imgHeight = height;
+                }
+                this.init();
+            },
+            stopMobile: function () {
+                clearInterval(this.interval);
+            },
+            runMobile: function () {
+                let that = this;
+                let mobileWidth = -this.currentIndex * this.width -this.marginLeft;
+                runTransition(Math.abs(mobileWidth), this.transitionTime, function (value) {
+                    if(mobileWidth > 0){
+                        that.marginLeft += value;
+                    }else{
+                        that.marginLeft -= value;
+                    }
+                    that.mobileMarginLeft(that.marginLeft);
+                }, function () {
+                    that.marginLeft = -that.width * that.currentIndex;
+                    if(that.currentIndex >= that.length + 1){
+                        that.currentIndex = 1;
+                        that.marginLeft = -that.width;
+                    }else if(that.currentIndex <= 0){
+                        that.currentIndex = that.length;
+                        that.marginLeft = -that.width * that.length;
+                    }
+                    that.mobileMarginLeft(that.marginLeft);
+                })
+            },
+            startMobile: function () {
+                this.interval = setInterval(() => {
+                    this.currentIndex++;
+                    this.runMobile();
+                }, this.transitionTime + this.stopTime)
+            },
+            mobileMarginLeft: function (value) {
+                this.marginLeft = value;
+                this.$refs['imgContainer'].style.marginLeft = value + 'px';
+            },
+            touchstartFun: function (e) {
+                this.stopMobile();
+                this.touchstartX = e.touches[0].pageX;
+                this.startMarginLeft = this.marginLeft;
+                e.stopPropagation();
+            },
+            touchmoveFun: function (e) {
+                let x = e.touches[0].pageX;
+                this.marginLeft += x - this.touchstartX;
+                this.mobileMarginLeft(this.marginLeft);
+                this.touchstartX = x;
+                e.stopPropagation();
+            },
+            touchendFun: function (e) {
+                let value = this.marginLeft - this.startMarginLeft;
+                if(Math.abs(value) / this.width > parseFloat(this.weights)){
+                    if(value > 0){
+                        this.currentIndex--;
+                    }else{
+                        this.currentIndex++;
+                    }
+                }
+                this.runMobile();
+                this.startMobile();
+                e.stopPropagation();
+            },
+            imgClick: function (value) {
+                this.$router.goPath({path: '/particulars', query: {id: value}});
+            }
+        }
+    }
+</script>
+<style scoped>
+    .my-swi-per{
+        position: relative;
+        overflow: hidden;
+    }
+    p{
+        margin: 0;
+    }
+    .img-container{
+        font-size: 0;
+    }
+
+    .img-container img{
+
+    }
+    .img-index-container{
+        position: absolute;
+        bottom: 10px;
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .img-index-container1{
+        position: absolute;
+        bottom: 8px;
+        right: 10px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        padding: 2px 6px;
+    }
+
+    .img-index-container p{
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 1px solid black;
+        float: left;
+        margin-left: 10px;
+        background: rgba(255, 0, 0, 0.1);
+    }
+
+</style>

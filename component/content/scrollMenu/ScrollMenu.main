@@ -1,0 +1,475 @@
+<template>
+    <div class="scroll-menu">
+        <div class="fixPara">
+            <div class="search-input">
+                <span>搜索店内宝贝</span>
+            </div>
+        </div>
+        <div class="detail_title">
+            <scroll scroll-mode="2">
+                <div class="scroll-menu-width">
+                    <div @click="showdiv(1)" class="scroll-menu-width-li">
+                        <img src="img/g1.png"><span>商品详情</span>
+                    </div>
+                    <div @click="showdiv(2)" class="scroll-menu-width-li">
+                        <img src="img/46.png"><span>商品详情</span>
+                    </div>
+                    <div @click="showdiv(3)" class="scroll-menu-width-li">
+                        <img src="img/47.png"><span>商品详情</span>
+                    </div>
+                    <div @click="showdiv(4)" class="scroll-menu-width-li">
+                        <img src="img/50.png"><span>商品详情</span>
+                    </div>
+                    <div @click="showdiv(5)" class="scroll-menu-width-li">
+                        <img src="img/48.png"><span>商品详情</span>
+                    </div>
+                    <div @click="showdiv(6)" class="scroll-menu-width-li">
+                        <img src="img/52.png"><span>商品详情</span>
+                    </div>
+                    <div @click="showdiv(7)" class="scroll-menu-width-li">
+                        <img src="img/47.png"><span>商品详情</span>
+                    </div>
+                    <div @click="showdiv(8)" class="scroll-menu-width-li">
+                        <img src="img/41.png"><span>商品详情</span>
+                    </div>
+                    <div @click="showdiv(9)" class="scroll-menu-width-li">
+                        <img src="img/52.png"><span>商品详情</span>
+                    </div>
+                    <div @click="showdiv(10)" class="scroll-menu-width-li">
+                        <img src="img/g1.png"><span>商品详情</span>
+                    </div>
+                </div>
+            </scroll>
+        </div>
+            <div id="info1" class="detail_info_same" style="display: block">
+                <scroll scroll-mode="2"><div class="mainContent">
+                        <div class="item" @click="itemFun" m-for="v in item1" :item="v"
+                             :style="{width:itemWidth + '%', height: imgHeight + 130+ 'px',borderRadius:10+'px',background:'red'}">
+                            <img  :src="v.img"  :style="{width: imgWidth + '%', height: imgHeight + 'px'}"/>
+                            <h1 >{{v.text}}</h1>
+                            <h2>{{v.text1}}</h2>
+                            <h3 class="wen" :style="{ width: wenWidth + 10 + '%', }">{{v.text2}}</h3>
+                        </div>
+                    </div>
+                </scroll>
+            </div>
+            <div id="info2" class="detail_info_same" style="display: none">
+                <div class="mainContent">
+                    <div class="item" @click="itemFun" m-for="v in item2" :item="v"
+                         :style="{width:itemWidth + '%', height: imgHeight + 130+ 'px',borderRadius:10+'px'}">
+                        <img :src="v.img"  :style="{width: imgWidth + '%', height: imgHeight + 'px'}"/>
+                        <h1 >{{v.text}}</h1>
+                        <h2>{{v.text1}}</h2>
+                        <h3 class="wen" :style="{ width: wenWidth + 10 + '%', }">{{v.text2}}</h3>
+                    </div>
+                </div>
+            </div>
+            <div id="info3" class="detail_info_same" style="display: none">
+                <div class="mainContent">
+                    <div class="item" @click="itemFun" m-for="v in item1" :item="v"
+                         :style="{width:itemWidth + '%', height: imgHeight + 130+ 'px',borderRadius:10+'px'}">
+                        <img :src="v.img"  :style="{width: imgWidth + '%', height: imgHeight + 'px'}"/>
+                        <h1 >{{v.text}}</h1>
+                        <h2>{{v.text1}}</h2>
+                        <h3 class="wen" :style="{ width: wenWidth + 10 + '%', }">{{v.text2}}</h3>
+                    </div>
+                </div>
+            </div>
+            <div id="info4" class="detail_info_same" style="display: none">
+                <div class="mainContent">
+                    <div class="item" @click="itemFun" m-for="v in item2" :item="v"
+                         :style="{width:itemWidth + '%', height: imgHeight + 130+ 'px',borderRadius:10+'px'}">
+                        <img :src="v.img"  :style="{width: imgWidth + '%', height: imgHeight + 'px'}"/>
+                        <h1 >{{v.text}}</h1>
+                        <h2>{{v.text1}}</h2>
+                        <h3 class="wen" :style="{ width: wenWidth + 10 + '%', }">{{v.text2}}</h3>
+                    </div>
+                </div>
+            </div>
+            <div id="info5" class="detail_info_same" style="display: none">
+                <div class="mainContent">
+                    <div class="item" @click="itemFun" m-for="v in item1" :item="v"
+                         :style="{width:itemWidth + '%', height: imgHeight + 130+ 'px',borderRadius:10+'px'}">
+                        <img :src="v.img"  :style="{width: imgWidth + '%', height: imgHeight + 'px'}"/>
+                        <h1 >{{v.text}}</h1>
+                        <h2>{{v.text1}}</h2>
+                        <h3 class="wen" :style="{ width: wenWidth + 10 + '%', }">{{v.text2}}</h3>
+                    </div>
+                </div>
+            </div>
+            <div id="info6" class="detail_info_same" style="display: none">
+                <div class="mainContent">
+                    <div class="item" @click="itemFun" m-for="v in item2" :item="v"
+                         :style="{width:itemWidth + '%', height: imgHeight + 130+ 'px',borderRadius:10+'px'}">
+                        <img :src="v.img"  :style="{width: imgWidth + '%', height: imgHeight + 'px'}"/>
+                        <h1 >{{v.text}}</h1>
+                        <h2>{{v.text1}}</h2>
+                        <h3 class="wen" :style="{ width: wenWidth + 10 + '%', }">{{v.text2}}</h3>
+                    </div>
+                </div>
+            </div>
+        <div id="info7" class="detail_info_same" style="display: none">
+            <div class="mainContent">
+                <div class="item" @click="itemFun" m-for="v in item1" :item="v"
+                     :style="{width:itemWidth + '%', height: imgHeight + 130+ 'px',borderRadius:10+'px'}">
+                    <img :src="v.img"  :style="{width: imgWidth + '%', height: imgHeight + 'px'}"/>
+                    <h1 >{{v.text}}</h1>
+                    <h2>{{v.text1}}</h2>
+                    <h3 class="wen" :style="{ width: wenWidth + 10 + '%', }">{{v.text2}}</h3>
+                </div>
+            </div>
+        </div>
+        <div id="info8" class="detail_info_same" style="display: none">
+            <div class="mainContent">
+                <div class="item" @click="itemFun" m-for="v in item2" :item="v"
+                     :style="{width:itemWidth + '%', height: imgHeight + 130+ 'px',borderRadius:10+'px'}">
+                    <img :src="v.img"  :style="{width: imgWidth + '%', height: imgHeight + 'px'}"/>
+                    <h1 >{{v.text}}</h1>
+                    <h2>{{v.text1}}</h2>
+                    <h3 class="wen" :style="{ width: wenWidth + 10 + '%', }">{{v.text2}}</h3>
+                </div>
+            </div>
+        </div>
+        <div id="info9" class="detail_info_same" style="display: none">
+            <div class="mainContent">
+                <div class="item" @click="itemFun" m-for="v in item1" :item="v"
+                     :style="{width:itemWidth + '%', height: imgHeight + 130+ 'px',borderRadius:10+'px'}">
+                    <img :src="v.img"  :style="{width: imgWidth + '%', height: imgHeight + 'px'}"/>
+                    <h1 >{{v.text}}</h1>
+                    <h2>{{v.text1}}</h2>
+                    <h3 class="wen" :style="{ width: wenWidth + 10 + '%', }">{{v.text2}}</h3>
+                </div>
+            </div>
+        </div>
+        <div id="info10" class="detail_info_same" style="display: none">
+            <div class="mainContent">
+                <div class="item" @click="itemFun" m-for="v in item2" :item="v"
+                     :style="{width:itemWidth + '%', height: imgHeight + 130+ 'px',borderRadius:10+'px'}">
+                    <img :src="v.img"  :style="{width: imgWidth + '%', height: imgHeight + 'px'}"/>
+                    <h1 >{{v.text}}</h1>
+                    <h2>{{v.text1}}</h2>
+                    <h3 class="wen" :style="{ width: wenWidth + 10 + '%', }">{{v.text2}}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    // input('@/js/components/components.js');
+    let scroll = input('@/component/common/scroll/Scroll.main');
+    output = {
+        components: {
+            scroll: scroll
+        },
+        props: {
+            img:String,
+            item1:{
+                type:Array,
+                default: [
+                    {
+                        img:'@/img/14.jpg',
+                        text:'HUAWEI P30',
+                        text1:'24期免息',
+                        text2:'6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/13.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/13.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/9.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/11.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/12.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/10.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/8.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/9.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+
+                ]
+            },
+            item2:{
+                type:Array,
+                default: [
+                    {
+                        img:'@/img/7.jpg',
+                        text:'HUAWEI P30',
+                        text1:'24期免息',
+                        text2:'6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/8.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/9.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/11.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/12.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/10.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/8.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img:'@/img/9.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+
+                ]
+            },
+            itemWidth: {
+                type: Number,
+                default: 38
+            },
+            imgWidth: {
+                type: Number,
+                default: 60
+            },
+            imgHeight: {
+                type: Number,
+                default: 70
+            },
+            wenWidth:{
+                type:Number,
+                default:50
+            }
+        },
+        data: function () {
+            return {
+                aa:{
+
+                }
+            }
+        },
+        methods: {
+            //切换选项卡功能
+            showdiv: function(number) {
+                for (let i = 1; i <= 10; i++) {
+                    if (i == number) {
+                        let obj = document.getElementById("info" + number);
+                        obj.style.display = "";
+                    } else {
+                        let obj = document.getElementById("info" + i);
+                        obj.style.display = "none";
+                    }
+                }
+            },
+            itemFun:function (i) {
+                this.$emit('itemFun', i);
+            }
+        }
+    }
+</script>
+<style scoped>
+    .search-input {
+        width: 94%;
+        border: 1px solid #ccc;
+        border-radius: 40px;
+        height: 33px;
+        font-size: 16px;
+        float: left;
+        margin-top: 5px;
+        margin-left: 12px;
+        background-color: white;
+        background-size: 20px;
+        background-image: url(img/searchicon.png);
+        background-position: 12px 7px;
+        background-repeat: no-repeat;
+        padding: 12px 20px 12px 40px;
+        z-index: 999;
+    }
+    .search-input span{
+        margin-top: -7px;
+        position: absolute;
+        color: #848283;
+    }
+
+    .fixPara{
+        height: 50px;
+        background: white;
+    }
+    .item{
+        margin: 3px;
+        background-color: aqua;
+        transition-duration: 0ms;
+        display: inline-block;
+        width: 30%;
+        text-align: center;
+        border-radius: 10px;
+        transform: translate3d(0px, 0px, 0px);
+        background-color: #FFF;
+    }
+    .mainContent {
+        float: left;
+        width: 85%;
+        margin-left: 105px;
+        margin-top: 16px;
+    }
+    .item  h1{
+        font-size: 14px;
+        font-weight: 600;
+        margin-top: 25px;
+    }
+    .item  h2{
+        margin-top: 5px;
+        font-size: 15px;
+        font-weight: 400;
+    }
+    .item  h3{
+        padding: 3px 0;
+        font-weight: 500;
+        font-size: 12px;
+        color: white;
+        border-radius: 15px;
+        background: linear-gradient(to bottom right, #CC0000, #FF44AA);
+        margin: 15px auto;
+    }
+    .item img {
+        margin: 0 auto;
+        display: block;
+        border-radius: 10px;
+        margin-top: 4px;
+    }
+
+    .detail_info_same{
+        display: block;
+        position: fixed;
+        overflow: auto;
+        height: 580px;
+    }
+    .detail_title{
+        margin-top: 5px;
+        position: fixed;
+        z-index: 999;
+    }
+    .scroll-menu {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        bottom: 3rem;
+        margin-top: 50px;
+    }
+    .scroll-menu-width {
+        width: 110px;
+        height: 543px;
+        overflow: auto;
+    }
+    .scroll-menu-width-li {
+        width: 130px;
+        height: 88px;
+        padding: 1rem 2.8rem 1rem 1.8rem;
+        text-align: center;
+    }
+    .scroll-menu-width-li span {
+        display: block;
+        color: #333;
+        font-size: 0.5rem;
+        padding-top: 0.6rem;
+    }
+    .scroll-menu-width-li img{
+        width: 50px;
+        display: block;
+        margin: 0 auto;
+    }
+
+    @media screen and (max-width: 415px){
+        .scroll-menu-width {
+            height: 645px;
+        }
+        .detail_info_same {
+            height: 630px;
+        }
+    }
+    @media screen and (max-width: 413px){
+        .scroll-menu-width {
+            height: 635px;
+        }
+        .detail_info_same {
+            height: 636px;
+        }
+    }
+    @media screen and (max-width: 376px){
+        .scroll-menu-width {
+            height: 540px;
+        }
+        .detail_info_same {
+            height: 570px;
+        }
+    }
+    @media screen and (max-width: 360px){
+        .scroll-menu-width {
+            height: 540px;
+        }
+        .detail_info_same {
+            height: 550px;
+        }
+    }
+    @media screen and (max-width: 320px){
+        .scroll-menu-width {
+            height: 450px;
+        }
+        .detail_info_same {
+            height: 470px;
+        }
+    }
+</style>

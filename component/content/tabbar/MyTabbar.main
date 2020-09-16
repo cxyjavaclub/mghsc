@@ -1,0 +1,106 @@
+<template>
+    <tab-bar ref="tarBar">
+        <tab-bar-item ref="item"
+                      @selected="tabBarItemClick(index)"
+                      m-for="(v, index) in tabs"
+                      :url="v.url"
+                      :active-url="v.activeUrl"
+                      :big-mode="index === 0"
+                      :if-selected="index === 0"
+                      :text="v.text">
+        </tab-bar-item>
+    </tab-bar>
+</template>
+<script>
+    let {tabBar, tabBarItem} = input('@/component/common/tabbar/index.js')
+    output = {
+        props:{
+            tabs: {
+                type: Array,
+                default: [
+                    {
+                        url: '@/img/icon/首页.png',
+                        activeUrl: '@/img/timg (2).jpg',
+                        text: '首页'
+                    },
+                    {
+                        url: '@/img/icon/全部宝贝.png',
+                        activeUrl: '@/img/icon/全部宝贝(1).png',
+                        text: '全部宝贝'
+                    },
+                    {
+                        url: '@/img/icon/社区.png',
+                        activeUrl: '@/img/icon/社区 (1).png',
+                        text: '社区'
+                    },
+                    {
+                        url: '@/img/icon/购物车.png',
+                        activeUrl: '@/img/icon/购物车 (1).png',
+                        text: '购物车'
+                    },
+                    {
+                        url: '@/img/icon/我的.png',
+                        activeUrl: '@/img/icon/我的 (1).png',
+                        text: '我的'
+                    }
+                ]
+            }
+        },
+        data: function(){
+            return {
+                url: 'img/1.jpg',
+            }
+        },
+        created: function(){
+
+        },
+        mounted: function(){
+            setTimeout(() => {
+                let ref = this.$refs.item;
+                let path = this.$router.showRouter.path;
+                switch(path){
+                    case '/all-goods':
+                        ref[0].lostSelected();
+                        ref[1].selected();
+                        break;
+                    case '/community':
+                        ref[0].lostSelected();
+                        ref[2].selected();
+                        break;
+                    case '/shopping-cart':
+                        ref[0].lostSelected();
+                        ref[3].selected();
+                        break;
+                    case '/mine':
+                        ref[0].lostSelected();
+                        ref[4].selected();
+                        break;
+                }
+            }, 10)
+        },
+        components: {
+            tabBar:  tabBar,
+            tabBarItem: tabBarItem
+        },
+        methods: {
+            tabBarItemClick: function (index, text) {
+                let ref = this.$refs.item;
+                for(let i = 0; i < ref.length; i++){
+                    if(i != index){
+                        ref[i].lostSelected();
+                    }
+                }
+                this.$emit('selected', text);
+            },
+            hide: function () {
+                this.$refs.tarBar.hide();
+            },
+            show: function () {
+                this.$refs.tarBar.show();
+            }
+        }
+    }
+</script>
+<style scoped>
+
+</style>

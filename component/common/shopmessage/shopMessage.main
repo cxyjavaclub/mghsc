@@ -1,0 +1,44 @@
+<template>
+    <div class="shop-message" :style="{height: height + 'px'}">
+        <img :src="img" :style="{height: height + 'px', width: height + 'px', borderRadius: shape ? '0' : '50%'}"/>
+        <p class="name" :style="{lineHeight: height + 'px'}">{{name}}</p>
+    </div>
+</template>
+<script>
+    output = {
+        props: {
+            img: {
+                type: String,
+                default: '@/img/ytpic/H5.JPG'
+            },
+            name: {
+                type: String,
+                default: '米谷汇'
+            },
+            shape:{
+                type: Number,
+                default: 0
+            },
+            height: {
+                type: Number,
+                default: 40
+            }
+        }
+    }
+</script>
+<style scoped>
+    .shop-message{
+        display: flex;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .shop-message > img{
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+    }
+    .shop-message .name{
+        flex: 2;
+        padding-left: 5px;
+    }
+</style>

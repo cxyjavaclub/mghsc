@@ -1,0 +1,247 @@
+<template>
+    <!--总图块-->
+    <div class="segment">
+        <div class="header" m-for="v in header" :header="v">
+            <h1>{{v.header}}</h1>
+        </div>
+        <!--左一-->
+        <div class="top" >
+            <div class="left" m-for="v in left" :left="v">
+                <h1 >{{v.text}}</h1>
+                <h2>{{v.text1}}</h2>
+                <h3>{{v.text2}}</h3>
+                <img :src="v.img":style="{ width: imgWidth + '%',height: imgHeight + 'px' }">
+            </div>
+            <div class="right" m-for="v in right"  :right="v">
+                <img :src="v.img1":style="{ width: img1Width + '%',height: img1Height + 'px' }">
+                <h1 >{{v.text}}</h1>
+                <h2>{{v.text1}}</h2>
+                <h3>{{v.text2}}</h3>
+            </div>
+            <div class="right-one" m-for="v in right1"  :right1="v">
+                <img :src="v.img1" :style="{ width: img1Width + '%',height: img1Height + 'px' }">
+                <h1 >{{v.text}}</h1>
+                <h2>{{v.text1}}</h2>
+                <h3>{{v.text2}}</h3>
+            </div>
+        </div>
+        <div class="bottom" m-for="v in bottom"  :bottom="v">
+            <div class="item">
+                <img :src="v.img2" :style="{ width: img2Width + '%',height: img2Height + 'px' }">
+                <h1 >{{v.text}}</h1>
+                <h2>{{v.text1}}</h2>
+                <h3>{{v.text2}}</h3>
+            </div>
+            <div class="item-one" m-for="v in item1"  :item1="v">
+                <img :src="v.img2" :style="{ width: img2Width + '%',height: img2Height + 'px' }">
+                <h1 >{{v.text}}</h1>
+                <h2>{{v.text1}}</h2>
+                <h3>{{v.text2}}</h3>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    output = {
+        props:{
+            img:String,
+            img1:String,
+            img2:String,
+            header:{
+                type:Array,
+                default:[
+                    {
+                        header:'实力尖货·常玩一夏'
+                    }
+                ]
+            },
+            left:{
+                type:Array,
+                default:[
+                    {
+                        img: '@/img/12.jpg',
+                        text:'亚都智能恒温加湿器',
+                        text1:'新品优惠 40',
+                        text2:'到手价 299'
+                    }
+                ]
+            },
+            right:{
+                type:Array,
+                default:[
+                    {
+                        img1: '@/img/12.jpg',
+                        text:'亚都智能恒温加湿器',
+                        text1:'新品优惠 40',
+                        text2:'到手价 299'
+                    }
+                ]
+            },
+            right1:{
+                type:Array,
+                default:[
+                    {
+                        img1: '@/img/12.jpg',
+                        text:'亚都智能恒温加湿器',
+                        text1:'新品优惠 40',
+                        text2:'到手价 299'
+                    },
+
+                ]
+            },
+            bottom:{
+                type:Array,
+                default:[
+                    {
+                        img2: '@/img/12.jpg',
+                        text:'亚都智能恒温加湿器',
+                        text1:'新品优惠 40',
+                        text2:'到手价 2119'
+                    }
+                ]
+            },
+            item1:{
+                type:Array,
+                default:[
+                    {
+                        img2: '@/img/12.jpg',
+                        text:'亚都智能恒温加湿器',
+                        text1:'新品优惠 40',
+                        text2:'到手价 21339'
+                    }
+                ]
+            },
+            imgWidth:{
+                type:Number,
+                default:100
+            },
+            imgHeight:{
+                type:Number,
+                default:300
+            },
+            img1Width:{
+                type:Number,
+                default:100
+            },
+            img1Height:{
+                type:Number,
+                default:150
+            },
+            img2Width:{
+                type:Number,
+                default:100
+            },
+            img2Height:{
+                type:Number,
+                default:150
+            }
+        }
+    }
+</script>
+<style scoped>
+    .segment{
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    .header h1{
+        color: #4b4a8e;
+        text-align: center;
+        font-size: 30px;
+        font-weight: 500;
+        padding: 30px 0;
+    }
+    .top{
+        position: relative;
+        width: 94%;
+        margin: auto;
+    }
+    .top h1{
+        font-size: 17px;
+    }
+    .top h2{
+        font-family: YouYuan;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 10px;
+        letter-spacing: 1px;
+    }
+    .top h3{
+        font-size: 14px;
+        background-color: pink;
+        border-radius: 15px;
+        padding: 4px;
+        color: white;
+        width: 70%;
+        margin: auto;
+    }
+    .left{
+        width: 50%;
+        height: 505px;
+        margin-left: -3px;
+        position: relative;
+        overflow: hidden;
+        background-color: white;
+    }
+    .left h1{
+        padding: 40px 0 0 0;
+    }
+    .left img{
+        position: relative;
+        top: 80px;
+    }
+    .right{
+        width: 50%;
+        height: 250px;
+        background-color: white;
+        position: absolute;
+        top: 0;
+        right: 0px;
+        margin-right: -2px;
+
+    }
+    .right-one{
+        width: 50%;
+        height: 250px;
+        background-color: white;
+        position: absolute;
+        top: 255px;
+        right: 0px;
+        margin-right: -2px;
+    }
+    .bottom{
+        margin:5px auto;
+        width: 94%;
+        display: flex;
+    }
+    .bottom h1{
+        font-size: 17px;
+    }
+    .bottom h2{
+        font-family: YouYuan;
+        font-weight: 600;
+        font-size: 14px;
+        padding: 10px;
+        letter-spacing: 1px;
+    }
+    .bottom h3{
+        font-size: 15px;
+        background-color: pink;
+        border-radius: 14px;
+        padding: 4px;
+        color: white;
+        width: 70%;
+        margin: auto;
+    }
+    .item{
+        width: 50%;
+        height: 250px;
+        margin-right: 4px;
+        background-color: white;
+    }
+    .item-one{
+        width: 50%;
+        height: 250px;
+        background-color: white;
+    }
+</style>

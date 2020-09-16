@@ -1,0 +1,22 @@
+<template>
+    <div>
+        设置
+        {{aa}}
+    </div>
+</template>
+<script>
+    output = {
+        name: 'setting',
+        created: function () {
+            this.aa = this.$router.query.id;
+        },
+        // methods:{
+        //     buttonClick: function () {
+        //         this.$router.back();
+        //     }
+        // }
+    }
+</script>
+<style scoped>
+
+</style>

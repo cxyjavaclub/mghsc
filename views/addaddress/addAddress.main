@@ -1,0 +1,320 @@
+<template>
+    <div class="add-address">
+        <nav-bar ref="navBar" title="添加地址" style="margin: 10px auto; border-radius: 10px; overflow: hidden; width: 100%;"></nav-bar>
+        <text-input class="text-input"
+                    placeholder="收货人"
+                    ref="textInput">
+        </text-input>
+        <text-input class="text-input"
+                    placeholder="手机号码"
+                    type="number"
+                    ref="textInput">
+        </text-input>
+        <text-input class="text-input"
+                    placeholder="邮编"
+                    type="number"
+                    ref="textInput">
+        </text-input>
+        <m-text ref="yourRegion" style="width: 100%; height: 50px; border-bottom: 1px solid #dcdfe6; background-color: #fff; padding: 0 15px; line-height: 40px; outline: none; color: #606266;"
+                    text="所在地区"
+                    type="number"
+                    @click="selectAddress"
+                    >
+        </m-text>
+        <text-input class="text-input"
+                    placeholder="详细地址"
+                    ref="textInput">
+        </text-input>
+        <div style="line-height: 50px; padding: 0 15px; background-color: white; border-bottom: 1px solid rgb(220, 223, 230); color: #606266;">
+            <span>默认地址</span><m-checkbox ref="defAddr" style="margin-left: 8px; top: 3px; width: 18px; height: 18px;"></m-checkbox>
+        </div>
+
+        <div>
+            <m-button @click="saveAddress"
+                      style="width: 50%; display: block; float: left; color: white; box-sizing: border-box; height: 50px; margin-top: 10px; background-color: #67c23a;"
+                      :style="addrId ? 'width: 50%' : 'width: 100%'"
+                      text="保存地址">
+            </m-button>
+            <m-button @click="delAddress"
+                      style="width: 50%; display: block; float: right; color: white;  box-sizing: border-box; height: 50px; margin-top: 10px; background-color: #67c23a;"
+                      :style="addrId ? 'display: block' : 'display: none'"
+                      text="删除地址">
+            </m-button>
+        </div>
+
+        <div m-if="dialogFlag" @click="dialogClick">
+            <div class="background-fixed"></div>
+            <div class="content-fixed">
+                <div class="dialog-content" style="text-align: left; padding-left: 15px;" @click="dialogContentClick">
+                    <div class="address-select-head">
+                        <p @click="addressSelectHead(0)">{{saveAddrName[0]}}</p>
+                        <p @click="addressSelectHead(1)">{{saveAddrName[1]}}</p>
+                        <p @click="addressSelectHead(2)">{{saveAddrName[2]}}</p>
+                    </div>
+                    <div class="address-select-content">
+                        <p m-for="v in allAddr" @click="selectAddrClick(v)">{{v.cname}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    let textInput = input('@/component/common/textinput/textInput.main');
+    let mButton = input('@/component/common/mbutton/mButton.main');
+    let mDialog = input('@/component/common/mdialog/mDialog.main');
+    let mText = input('@/component/common/mtext/mText.main');
+    let mCheckbox = input('@/component/common/mcheckbox/MCheckbox.main');
+    let navBar = input('@/component/common/navbar/NavBar.main');
+    output = {
+        components:{
+            textInput: textInput,
+            mButton: mButton,
+            mDialog: mDialog,
+            mText: mText,
+            mCheckbox: mCheckbox,
+            navBar: navBar,
+        },
+        data: function () {
+            return {
+                dialogFlag: false,
+                allAddr: [],
+                saveAddrData: [null, null, null],
+                saveAddrName: ['', '', ''],
+                indexArr: 0,
+                addrId: null
+            }
+        },
+        activated: function () {
+            setTimeout(() => {
+                let show = this.$main.container.get('hideTarBar')
+                if(show){
+                    show();
+                }
+            }, 10);
+        },
+        created: function () {
+            if (this.$router.query && this.$router.query.id) {
+                this.addrId = this.$router.query.id;
+                let load = this.$loading();
+                $.get("/mghsc/addr/id-data", {addrId: this.addrId}, (result) => {
+                    if(result.code == 200){
+                        let data = result.data;
+                        if(data){
+                            this.$refs.navBar.setTitle('修改地址');
+                        }
+                        // console.log(data)
+                        //写入名称
+                        this.$refs.textInput[0].setValue(data.userName);
+                        //写入手机号
+                        this.$refs.textInput[1].setValue(data.phone);
+                        //写入邮编
+                        this.$refs.textInput[2].setValue(data.zip + '');
+                        //写入所在地区
+                        this.saveAddrName[0] = data.provinceName;
+                        this.saveAddrData[0] = {id: data.province}
+                        this.saveAddrName[1] = data.cityName;
+                        this.saveAddrData[1] = {id: data.city}
+                        this.saveAddrName[2] = data.districtName;
+                        this.saveAddrData[2] = {id: data.district}
+                        this.dialogClick();
+                        //写入详细地址
+                        this.$refs.textInput[3].setValue(data.address);
+                        //写入默认地址
+                        this.$refs.defAddr.setIsChecked(data.isDefault);
+                        this.$close(load);
+                    }
+                }, 'json');
+            }
+            this.getAddr(1);
+        },
+        mounted: function () {
+        },
+        methods:{
+            saveAddress: function (that) {
+                let arr = [];
+                for(let i = 0; i < 4; i++){
+                    let input = this.$refs.textInput[i];
+                    let v = input.getValue();
+                    if(v){
+                        if(i == 1){
+                            if(!(/^1[3456789]\d{9}$/.test(v))){
+                                alert('手机号码有误，请重填')
+                                return false;
+                            }
+                        }
+                        arr.push(v);
+                    }else{
+                        this.$message(input.getPlaceholder() + "信息为空");
+                        return;
+                    }
+                }
+                for(let i = 0; i < 3; i++){
+                    if(this.saveAddrData[i] == null){
+                        this.$message("所在区域不全");
+                        return;
+                    }
+                }
+                let obj = {
+                    userName: arr[0],
+                    phone: arr[1],
+                    zip: arr[2],
+                    address: arr[3],
+                    province: this.saveAddrData[0].id,
+                    city: this.saveAddrData[1].id,
+                    district: this.saveAddrData[2].id,
+                    isDefault: this.$refs.defAddr.getIsChecked() ? 1 : 0
+                }
+                if(this.addrId || this.addrId == 0){
+                    obj.addrId = this.addrId;
+                }
+                // console.log(obj);
+                let load = this.$loading();
+                $.get("/mghsc/addr/add-or-update", obj, (result) => {
+                    if(result.code == 200){
+                        this.$close(load);
+                        if(this.addrId || this.addrId == 0){
+                            alert("地址修改成功");
+                        }else{
+                            alert("地址添加成功");
+                        }
+                        this.$router.back();
+                    }
+                }, 'json');
+            },
+            selectAddress: function () {
+                this.dialogFlag = true;
+                if(this.dialogFlag){
+                    $('.address-select-content').height($(window).height() - 240);
+                }
+            },
+            dialogClick: function () {
+                this.dialogFlag = false;
+                let s = ''
+                for(let i = 0; i < 3; i++){
+                    let v = this.saveAddrName[i];
+                    if(v) {
+                        s += v + '-';
+                    }
+                }
+                if(s) {
+                    s = s.substring(0, s.length - 1);
+                    this.$refs.yourRegion.setText(s);
+                }else{
+                    this.$refs.yourRegion.setText('所在地区');
+                }
+            },
+            dialogContentClick: function (e) {
+                e.stopPropagation();
+            },
+            addressSelectHead: function (index) {
+                console.log(index)
+                if(index < 2) {
+                    this.indexArr = index;
+                    for (let i = index; i < 3; i++) {
+                        this.saveAddrName[i] = '';
+                        this.saveAddrData[i] = null;
+                    }
+                    if (index == 0) {
+                        this.getAddr(1);
+                    } else {
+                        this.getAddr(this.saveAddrData[this.indexArr - 1].id);
+                    }
+                }
+            },
+            selectAddrClick: function (obj) {
+                console.log(obj);
+                console.log(this.indexArr);
+                if(this.indexArr < 3){
+                    this.saveAddrName[this.indexArr] = obj.cname;
+                    this.saveAddrData[this.indexArr] = obj;
+                    if(this.indexArr != 2) {
+                        this.getAddr(obj.id);
+                        this.indexArr++;
+                    }
+                }
+            },
+            delAddress: function () {
+                if(this.addrId || this.addrId == 0) {
+                    let r = confirm("是否删除地址信息？");
+                    if (r == true) {
+                        let load = this.$loading();
+                        $.get("/mghsc/addr/del", {addrId: this.addrId}, (result) => {
+                            if (result.code == 200) {
+                                this.$close(load);
+                                alert('删除成功');
+                                this.$router.back();
+                            }
+                        }, 'json');
+                        // console.log('删除地址')
+                    }
+                }
+            },
+            getAddr: function (parentId) {
+                $.get("/mghsc/addr/places-parent-id-data", {parentId: parentId}, (result) => {
+                    // console.log(result)
+                    if(result.code == 200){
+                        let data = result.data;
+                        this.allAddr = data;
+                    }
+                }, 'json');
+            }
+        }
+    }
+</script>
+<style scoped>
+    .add-address{
+        width: 96%;
+        margin: 8px auto 60px auto;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .text-input{
+        border: none;
+        border-bottom: 1px solid #dcdfe6;
+        height: 50px !important;
+    }
+    .dialog-content{
+        position: absolute;
+        top: 200px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: white;
+    }
+    .background-fixed{
+        z-index: 2000000;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: .5;
+        background: #000;
+    }
+
+    .content-fixed{
+        z-index: 2000001;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: center;
+    }
+    .address-select-head{
+        line-height: 40px;
+        height: 40px;
+    }
+    .address-select-head > p{
+        display: inline-block;
+        padding: 0 10px;
+    }
+    .address-select-content{
+        overflow-y: auto;
+    }
+    .address-select-content > p{
+        line-height: 40px;
+        padding-left: 10px;
+    }
+</style>

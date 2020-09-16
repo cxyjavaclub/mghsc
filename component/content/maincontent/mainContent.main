@@ -1,0 +1,135 @@
+<template>
+    <div class="mainContent">
+        <div class="item" @click="itemFun" m-for="v in item" :item="v"
+             :style="{width:itemWidth + '%', height: imgHeight + 180+ 'px'}">
+            <img :src="v.img" :style="{width: imgWidth + '%', height: imgHeight + 'px'}"/>
+            <h1>{{v.text}}</h1>
+            <h2>{{v.text1}}</h2>
+            <h3 class="wen" :style="{ width: wenWidth + 10 + '%', }">{{v.text2}}</h3>
+        </div>
+    </div>
+</template>
+<script>
+    output = {
+        props: {
+            img: String,
+            item: {
+                type: Array,
+                default: [
+                    {
+                        img: '@/img/14.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img: '@/img/13.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img: '@/img/9.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img: '@/img/11.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img: '@/img/12.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img: '@/img/10.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img: '@/img/8.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+                    {
+                        img: '@/img/9.jpg',
+                        text: 'HUAWEI P30',
+                        text1: '24期免息',
+                        text2: '6.1狂欢价'
+                    },
+
+                ]
+            },
+            itemWidth: {
+                type: Number,
+                default: 49
+            },
+            imgWidth: {
+                type: Number,
+                default: 100
+            },
+            imgHeight: {
+                type: Number,
+                default: 500
+            },
+            wenWidth: {
+                type: Number,
+                default: 25
+            }
+        },
+        methods: {
+            itemFun: function (i) {
+                this.$emit('itemFun', i);
+            }
+        }
+    }
+</script>
+<style scoped>
+    .mainContent {
+        display: flex;
+        flex-wrap: wrap;
+        width: 95%;
+        margin: auto;
+    }
+
+    .item {
+        border-radius: 10px;
+        margin: 5px auto;
+        background-color: #FFFFFF;
+    }
+
+    .item h1 {
+        font-size: 35px;
+        font-weight: 600;
+        margin-top: 25px;
+    }
+
+    .item h2 {
+        margin-top: 5px;
+        font-size: 27px;
+        font-weight: 400;
+    }
+
+    .item h3 {
+        padding: 3px 0;
+        font-weight: 500;
+        font-size: 22px;
+        color: white;
+        border-radius: 15px;
+        background: linear-gradient(to bottom right, #CC0000, #FF44AA);
+        margin: 15px auto;
+    }
+
+    .item img {
+        margin: 0 auto;
+        display: block;
+        border-radius: 10px;
+    }
+</style>

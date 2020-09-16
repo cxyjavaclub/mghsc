@@ -1,0 +1,131 @@
+<template>
+    <div class="goods-buy">
+        <div class="show">
+            <div class="address-message box">
+                <address-box @click="addressBoxClick"></address-box>
+                <img src="@/img/icon/箭头.png"/>
+            </div>
+            <div class="order-message box">
+                <goods-order ref="goodsOrder" :num="buyNumber"></goods-order>
+                <div class="buy-number">
+                    <p>购买数量</p>
+                    <div class="number-operating">
+                        <span class="less" @click="lessFun">-</span>
+                        <span class="value">{{buyNumber}}</span>
+                        <span class="plus" @click="plusFun">+</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <order-tab-bar @submit-order="submitOrder"
+                       :num="buyNumber"
+                       :price="unitPrice"
+                       ref="orderTabBar">
+        </order-tab-bar>
+    </div>
+</template>
+<script>
+    let addressBox = input('@/component/common/addressbox/addressBox.main');
+    let goodsOrder = input('@/component/common/goodsorder/GoodsOrder.main');
+    let orderTabBar = input('@/component/content/orderdetails/ordertabbar/OrderTabBar.main');
+    output = {
+        components:{
+            addressBox: addressBox,
+            goodsOrder: goodsOrder,
+            orderTabBar: orderTabBar,
+        },
+        data: function () {
+            return {
+                buyNumber: 1,
+                unitPrice: 182.4,
+                totalPrice: 0
+            }
+        },
+        mounted: function () {
+            setTimeout(() => {
+                this.$broadcast.send('hideTarBar');
+            }, 10)
+        },
+        methods: {
+            addressBoxClick: function () {
+                this.$router.goPath('/address-management')
+            },
+            lessFun: function () {
+                if(--this.buyNumber == 0){
+                    this.buyNumber = 1;
+                    this.$message('不能再减了');
+                }else{
+                    this.$refs.orderTabBar.setNum(this.buyNumber);
+                    this.$refs.orderTabBar.setPrice(this.buyNumber * this.unitPrice);
+                    this.$refs.goodsOrder.setNum(this.buyNumber);
+                }
+            },
+            plusFun: function () {
+                this.buyNumber += 1;
+                this.$refs.orderTabBar.setNum(this.buyNumber);
+                this.$refs.orderTabBar.setPrice(this.buyNumber * this.unitPrice);
+                this.$refs.goodsOrder.setNum(this.buyNumber);
+            },
+            submitOrder: function () {
+                console.log('提交订单')
+            }
+        }
+    }
+</script>
+<style scoped>
+    .goods-buy .show{
+        margin: 0 10px;
+    }
+    .box{
+        background-color: white;
+        border-radius: 8px;
+    }
+    .address-message{
+        margin: 10px 0;
+        display: flex;
+        align-items: center;
+    }
+    .address-message > img{
+        width: 20px;
+        height: 20px;
+        margin-left: 10px;
+    }
+    .order-message{
+        padding: 10px;
+    }
+    .buy-number{
+        margin: 30px 0 5px 20px;
+        display: flex;
+    }
+
+    .buy-number > p{
+        flex: 1;
+    }
+
+    .number-operating{
+        display: flex;
+    }
+
+    .number-operating > span{
+        text-align: center;
+    }
+    .number-operating .less, .number-operating .plus{
+        width: 20px;
+    }
+    .number-operating .less{
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+        border: 1px solid #9b9b9b;
+    }
+    .number-operating .value{
+        border-top: 1px solid #9b9b9b;
+        border-bottom: 1px solid #9b9b9b;
+        min-width: 30px;
+        padding: 0 10px;
+    }
+    .number-operating .plus{
+        border: 1px solid #9b9b9b;
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+</style>

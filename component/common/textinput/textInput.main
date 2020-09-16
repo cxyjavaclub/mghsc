@@ -1,0 +1,62 @@
+<template>
+    <input :type="type" @click="inputClick" :placeholder="placeholder" :value="value" ref="input" class="text-input"/>
+</template>
+<script>
+    output = {
+        props:{
+            placeholder:{
+                type: String,
+                default: ''
+            },
+            type:{
+                type: String,
+                default: 'text'
+            },
+            disabled:{
+                type: Boolean,
+                default: false
+            }
+        },
+        data: function () {
+            return {
+                value: ''
+            }
+        },
+        mounted: function(){
+            if(this.disabled){
+                this.$refs.input.setAttribute('disabled', '');
+            }
+        },
+        methods:{
+            getValue: function () {
+                return this.value;
+            },
+            setValue: function (v) {
+                this.value = v;
+            },
+            getPlaceholder: function () {
+                return this.placeholder;
+            },
+            inputClick: function () {
+                this.$emit('click', this);
+            }
+        }
+    }
+</script>
+<style scoped>
+    .text-input{
+        background-color: #fff;
+        background-image: none;
+        color: #606266;
+        display: inline-block;
+        font-size: inherit;
+        height: 40px;
+        line-height: 40px;
+        border: none;
+        outline: none;
+        padding: 0 15px;
+        transition: border-color .2s cubic-bezier(.645,.045,.355,1);
+        border-bottom: 1px solid rgb(220, 223, 230);
+        width: 100%;
+    }
+</style>

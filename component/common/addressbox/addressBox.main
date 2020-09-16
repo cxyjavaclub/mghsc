@@ -1,0 +1,73 @@
+<template>
+    <div class="address-box" @click="divClick">
+        <p class="name" :style="{backgroundColor: message.isDefault ? '#1296db' : '#9b9b9b'}">{{nameIndex1}}</p>
+        <div class="message">
+            <p class="name-message">{{message.userName}} <span class="phone">{{message.phone}}</span></p>
+            <p class="area">{{message.area}}</p>
+            <p class="address" m-if="message.address">{{message.address}}</p>
+        </div>
+    </div>
+</template>
+<script>
+    output = {
+        props:{
+            message: {
+                type: Object,
+                default: function(){
+                    return {
+                        id: 123,
+                        userName: '陈晓云',
+                        phone: '15002365816',
+                        area: '江苏省苏州市姑苏区江苏省苏州',
+                        address: '仁安街8号'
+                    }
+                }
+            }
+        },
+        data: function () {
+            return {
+                nameIndex1: ''
+            }
+        },
+        mounted: function () {
+            setTimeout(() => {
+                if(this.message && this.message.constructor === Object){
+                    this.nameIndex1 = this.message.userName ? this.message.userName.charAt(0) : "";
+                }
+            }, 10)
+        },
+        methods: {
+            divClick: function () {
+                this.$emit('click', this.message);
+            }
+        }
+    }
+</script>
+<style scoped>
+    .address-box{
+        display: flex;
+        align-items: center;
+    }
+    .address-box .name{
+        margin: 0 10px;
+        border-radius: 50%;
+        background-color: #9b9b9b;
+        height: 40px;
+        width: 40px;
+        line-height: 40px;
+        text-align: center;
+        font-size: 20px;
+        font-weight: 700;
+        color: white;
+    }
+    .address-box .message{
+        flex: 2;
+        height: 100%;
+        padding: 5px;
+        font-size: 17px;
+    }
+    .address-box .message .name-message .phone{
+        font-size: 13px;
+        color: #9b9b9b;
+    }
+</style>

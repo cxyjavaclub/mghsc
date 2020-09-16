@@ -1,0 +1,175 @@
+<template>
+    <div class="tao">
+<!--        <div class="author-message">-->
+<!--            <img class="head-portraits" :src="authorMessage.authorImg"/>-->
+<!--            <div>-->
+<!--                <h2>{{authorMessage.authorName}}</h2>-->
+<!--                <span class="create-date">{{authorMessage.createDate}}</span>-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="box">
+            <div @click="typeClick(contentMessage.postId)">
+                <div class="type">
+                    <a>{{contentMessage.text}}</a>
+                </div>
+                <div class="pic">
+                    <span m-for="v in contentMessage.revealImgList">
+                        <img :src="v">
+                    </span>
+                </div>
+            </div>
+            <div class="bottom">
+                <div class="comment">
+                    <img :src="comImg"/>
+                    <a>{{comValue}}</a>
+                </div>
+                <div class="like">
+                    <img :src="likeImg"/>
+                    <a>{{likeValue}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    output = {
+        igm: Array,
+        props: {
+            authorMessage: {
+                type: Object,
+                default: {
+                    authorImg: '@/img/ytpic/H3.JPG',
+                    authorName: '你好',
+                    createDate: '2020/08/05'
+                }
+            },
+            contentMessage: {
+                type: Object,
+                default: {
+                    postId: '1',
+                    text: '',
+                    revealImgList: [
+
+                    ]
+                }
+            },
+            comImg: {
+                type: String,
+                default: '@/img/icon/dz.png'
+            },
+            comValue: {
+                type: Array,
+                default: '0'
+            },
+            likeImg: {
+                type: String,
+                default: '@/img/icon/pl.png'
+            },
+            likeValue: {
+                type: Array,
+                default: '0'
+            }
+        },
+        methods: {
+            typeClick: function (id) {
+                console.log(id);
+                this.$router.goPath({path: '/taoContent', query: {id: id}});
+            }
+        }
+    }
+</script>
+
+<style scoped>
+    .tao {
+        width: 98%;
+        margin: 10px auto;
+        /*background-color: #ffffff;*/
+    }
+
+    .author-message {
+        background-color: #ffffff;
+        display: flex;
+        height: 50px;
+        align-items: center;
+        padding: 0 10px;
+    }
+
+    .author-message img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+
+    }
+
+    .author-message h2 {
+        font-size: 17px;
+        margin-left: 5px;
+        font-weight: 600;
+    }
+    .author-message .create-date{
+        font-size: 15px;
+        color: #9b9b9b;
+    }
+
+    .box {
+        margin-bottom: 10px;
+        border-radius: 10px;
+        background-color: #ffffff;
+    }
+
+    .type {
+        width: 100%;
+        margin: 0 auto;
+        padding: 0 10px;
+    }
+
+    .type a {
+        font-size: 16px;
+        color: #9b9b9b;
+        padding-top: 5px;
+        overflow: hidden;
+    }
+
+    .pic {
+        width: 100%;
+        overflow: hidden;
+        margin: 10px 0;
+        padding: 0 10px;
+    }
+
+    .pic span {
+        display: block;
+        float: left;
+        width: 33.333333%;
+        padding: 0.5%;
+        height: 113px;
+    }
+
+    .pic img {
+        width: 99%;
+        height: 100%;
+        border-radius: 10px;
+    }
+
+    .bottom {
+        display: flex;
+        width: 100%;
+        padding-bottom: 20px;
+        flex-direction: row-reverse;
+    }
+
+    .bottom .comment{
+        margin-right: 10px;
+    }
+
+    .bottom img {
+        float: left;
+        width: 20px;
+        margin-right: 5px;
+    }
+
+    .like {
+        padding-right: 10px
+    }
+</style>

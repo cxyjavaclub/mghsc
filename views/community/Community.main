@@ -1,0 +1,57 @@
+<template>
+    <div class="community" style="margin-bottom: 60px; overflow: hidden;">
+        <div style="display: none;">
+            <tao></tao>
+        </div>
+        <div style="border-radius: 10px; overflow: hidden; width: 98%; margin: 5px auto;">
+            <swiper ref="swiper"></swiper>
+        </div>
+        <tao m-for="v in postArr" :content-message="v"></tao>
+    </div>
+</template>
+<script>
+    let swiper = input('@/component/content/swiper/MySwiPer.main');
+    let tao = input('@/component/content/thetao/tao.main');
+    output = {
+        components:{
+            tao:tao,
+            swiper:swiper,
+        },
+        data: function () {
+            return {
+                postArr: []
+            }
+        },
+        activated: function () {
+            setTimeout(() => {
+                let show = this.$main.container.get('showTarBar')
+                if(show){
+                    show();
+                }
+            }, 10);
+        },
+        created: function () {
+            let load = this.$loading();
+            $.get("/mghsc/page/conf", {pageType: 'community'},  (result) => {
+                if(result.code == 200){
+                    let data = result.data;
+                    let configObj = JSON.parse(data.configJson);
+                    this.$refs.swiper.setSwiperData(configObj.carousel);
+                    this.$close(load);
+                }
+            },'json');
+            let load1 = this.$loading();
+            $.get("/mghsc/post/page-reveal-data",  (result) => {
+                console.log(result)
+                if(result.code == 200){
+                    let data = result.data;
+                    this.postArr = data.records;
+                    this.$close(load1);
+                }
+            },'json');
+        },
+    }
+</script>
+<style scoped>
+
+</style>

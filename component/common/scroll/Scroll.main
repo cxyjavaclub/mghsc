@@ -1,0 +1,470 @@
+<template>
+    <div class="scroll">
+        <div ref="container" class="container"
+             @mousedown="mousedownFun"
+             @mousemove="mousemoveFun"
+             @mouseup="mouseupFun"
+             @touchstart="touchstartFun"
+             @touchmove="touchmoveFun"
+             @touchend="touchendFun">
+            <div ref="content" class="content">
+                <slot></slot>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    output = {
+        props: {
+            //惯性检测时间范围-120
+            limitTime: {
+                type: Number,
+                default: 120
+            },
+            //惯性值倍数
+            multiple: {
+                type: Number,
+                default: 5
+            },
+            //惯性滑动边缘最大值
+            boundaryAddValue: {
+                type: Number,
+                default: 60
+            },
+            //惯性滚动最小时间
+            minTime: {
+                type: Number,
+                default: 50
+            },
+            //滚动模式 1支持横向滚动 2纵向滚动 3横向纵向滚动 其他禁止滚动
+            scrollMode: {
+                type: Number,
+                default: 1
+            },
+            //单边模式，只有滚动模式为3的时候生效
+            unilateralMode: {
+                type: Boolean,
+                default: false
+            }
+        },
+        data: function () {
+            return {
+                translateX: 0,
+                translateY: 0,
+                contentWidth: 0,
+                containerWidth: 0,
+                rangeValueX: 0,
+                containerHeight: 0,
+                contentHeight: 0,
+                rangeValueY: 0,
+                unilateralSelectFlag: false
+            }
+        },
+        mounted: function () {
+            setTimeout(() => {
+                this.init();
+            }, 20)
+        },
+        methods: {
+            init: function () {
+                if (this.limitTime.constructor === String) {
+                    this.limitTime = parseInt(this.limitTime + '');
+                }
+                if (this.multiple.constructor === String) {
+                    this.multiple = parseInt(this.multiple + '');
+                }
+                if (this.boundaryAddValue.constructor === String) {
+                    this.boundaryAddValue = parseInt(this.boundaryAddValue + '');
+                }
+                if (this.minTime.constructor === String) {
+                    this.minTime = parseInt(this.minTime + '');
+                }
+                if (this.scrollMode.constructor === String) {
+                    this.scrollMode = parseInt(this.scrollMode + '');
+                }
+                if (this.unilateralMode.constructor !== Boolean) {
+                    this.unilateralMode = eval(this.unilateralMode);
+                }
+                this.containerWidth = this.$refs['container'].offsetWidth;
+                this.contentWidth = this.$refs['content'].scrollWidth;
+                this.rangeValueX = this.contentWidth - this.containerWidth;
+
+                this.containerHeight = this.$refs['container'].offsetHeight;
+                this.contentHeight = this.$refs['content'].scrollHeight;
+                this.rangeValueY = this.contentHeight - this.containerHeight;
+
+                this.arrivalsLeftFlag = true;
+                this.arrivalsRightFlag = true;
+                this.arrivalsTopFlag = true;
+                this.arrivalsBottomFlag = true;
+                this.letGoFlag = true;
+            },
+            getTranslateX: function () {
+                return this.translateX;
+            },
+            getTranslateY: function () {
+                return this.translateY;
+            },
+            setTranslateX: function (x) {
+                x = x > 0 ? 0 : x;
+                x =  x < -this.rangeValueX ? -this.rangeValueX : x;
+                this.setCompulsoryTranslateXY(x, this.translateY);
+            },
+            setTranslateY: function (y) {
+                y = y > 0 ? 0 : y;
+                y =  y < -this.rangeValueY ? -this.rangeValueY : y;
+                this.setCompulsoryTranslateXY(this.translateX, y);
+            },
+            setTranslateXY: function (x, y) {
+                this.setTranslateX(x);
+                this.setTranslateY(y);
+            },
+            setCompulsoryTranslateX: function (x) {
+                this.setCompulsoryTranslateXY(x, this.translateY);
+            },
+            setCompulsoryTranslateY: function (y) {
+                this.setCompulsoryTranslateXY(this.translateX, y);
+            },
+            mousedownFun: function (e) {
+                this.mousedownFlag = true;
+                this.touchstartFun(e);
+            },
+            mousemoveFun: function (e) {
+                if (this.mousedownFlag) {
+                    this.touchmoveFun(e);
+                }
+            },
+            mouseupFun: function (e) {
+                if (this.mousedownFlag) {
+                    this.touchendFun(e);
+                    this.mousedownFlag = false;
+                }
+            },
+            ifCondition: function (type) {
+                return type == this.scrollMode || this.scrollMode == 3;
+            },
+            getEventX: function (e) {
+                if (this.mousedownFlag) {
+                    return e.pageX;
+                } else {
+                    return e.changedTouches[0].pageX;
+                }
+            },
+            getEventY: function (e) {
+                if (this.mousedownFlag) {
+                    return e.pageY;
+                } else {
+                    return e.changedTouches[0].pageY;
+                }
+            },
+            lastSpecialDispose: function (e) {
+                e.stopPropagation();
+                // e.preventDefault();
+            },
+            touchstartFun: function (e) {
+                this.setTransitionDuration(0)
+                if (this.ifCondition(1)) {
+                    this.arrX = [];
+                    this.coordinateX = this.getEventX(e);
+                    this.arrX.push({value: this.coordinateX, time: new Date().getTime()});
+                }
+                if (this.ifCondition(2)) {
+                    this.arrY = [];
+                    this.coordinateY = this.getEventY(e);
+                    this.arrY.push({value: this.coordinateY, time: new Date().getTime()});
+                }
+                this.$emit('mousedown', this.translateX, this.translateY, this, this.getEventX(e), this.getEventY(e), e);
+                this.lastSpecialDispose(e);
+            },
+            touchmoveFun: function (e) {
+                let beforeX = this.translateX;
+                let beforeY = this.translateX;
+                this.disposeMobile(e);
+                this.$emit('mousemove', beforeX, beforeY, this.translateX, this.translateY, this, this.getEventX(e), this.getEventY(e), e);
+                this.lastSpecialDispose(e);
+            },
+            touchendFun: function (e) {
+                if(this.letGoFlag) {
+                    let beforeX = this.translateX;
+                    let beforeY = this.translateY;
+                    let obj;
+                    let time = undefined;
+                    let flag = false;
+                    let edgeValue = [0, 0, 0];
+                    this.disposeMobile(e);
+                    if (this.ifCondition(1)) {
+                        obj = this.disposeExceedData(this.translateX, this.rangeValueX);
+                        if (obj.flag) {
+                            this.translateX = obj.distance;
+                            time = obj.time;
+                            this.setTimeTransitionDuration0(time);
+                        } else {
+                            flag = true;
+                            let arrObj = this.disposeScrollData(this.arrX);
+                            arrObj.distance += this.translateX;
+                            edgeValue[2] = arrObj.onePxTime;
+                            let mobileObj = this.disposeScrollDataMobile(this.rangeValueX, arrObj.distance, arrObj.time, arrObj.onePxTime);
+                            this.translateX = mobileObj.distance;
+                            time = mobileObj.time;
+                            edgeValue[0] = mobileObj.edgeValue;
+                        }
+                    }
+                    if (this.ifCondition(2)) {
+                        obj = this.disposeExceedData(this.translateY, this.rangeValueY);
+                        if (obj.flag) {
+                            this.translateY = obj.distance;
+                            time = obj.time;
+                            this.setTimeTransitionDuration0(time);
+                        } else {
+                            flag = true;
+                            let arrObj = this.disposeScrollData(this.arrY);
+                            arrObj.distance += this.translateY;
+                            if (arrObj.onePxTime > edgeValue[2]) {
+                                edgeValue[2] = arrObj.onePxTime;
+                            }
+                            let mobileObj = this.disposeScrollDataMobile(this.rangeValueY, arrObj.distance, arrObj.time, arrObj.onePxTime);
+                            this.translateY = mobileObj.distance;
+                            if (time) {
+                                if (mobileObj.time > time) {
+                                    time = mobileObj.time;
+                                }
+                            } else {
+                                time = mobileObj.time;
+                            }
+                            edgeValue[1] = mobileObj.edgeValue;
+                        }
+
+                    }
+                    if (time != undefined) {
+                        this.setTimeCompulsoryTranslateXY(time, this.translateX, this.translateY);
+                        if (flag) {
+                            this.resetPosition(edgeValue[0], edgeValue[1], time, edgeValue[2]);
+                        }
+                    }
+                    if (this.unilateralSelectFlag) {
+                        this.scrollMode = 3;
+                        this.unilateralSelectFlag = false;
+                    }
+                    this.$emit('mouseup', beforeX, beforeY, this.translateX, this.translateY, this, this.getEventX(e), this.getEventY(e), e);
+                }
+                this.lastSpecialDispose(e);
+            },
+            setTransitionDuration: function (time) {
+                this.$refs['content'].style.transitionDuration = time + 'ms'
+            },
+            setTimeTransitionDuration0: function (time) {
+                setTimeout(() => {
+                    this.setTransitionDuration(0);
+                }, time);
+            },
+            setCompulsoryTranslateXY: function (x, y, eventFlag) {
+                x = x ? x : 0;
+                y = y ? y : 0;
+                this.$refs['content'].style.transform = `translate3d(${x}px, ${y}px, 0px)`;
+                this.translateX = x;
+                this.translateY = y;
+                if(!eventFlag){
+                    this.addEventDispose(x, y);
+                }
+            },
+            addEventDispose: function (x, y) {
+                if(this.arrivalsLeftFlag){
+                    this.arrivalsLeftFlag = false;
+                    if(x > 0){
+                        this.$emit('arrivalsLeft', x, this);
+                    }
+                }
+                if(this.arrivalsRightFlag){
+                    this.arrivalsRightFlag = false;
+                    if(x < -this.rangeValueX){
+                        this.$emit('arrivalsRight', x, this);
+                    }
+                }
+                if(this.arrivalsTopFlag){
+                    this.arrivalsTopFlag = false;
+                    if(y > 0){
+                        this.$emit('arrivalsTop', y, this);
+                    }
+                }
+                if(this.arrivalsBottomFlag){
+                    this.arrivalsBottomFlag = false;
+                    if(y < -this.rangeValueY){
+                        this.$emit('arrivalsBottom', y, this);
+                    }
+                }
+                if(x > 0){
+                    this.$emit('exceedLeftSide', x, this);
+                }
+                if(x < -this.rangeValueX){
+                    this.$emit('exceedRightSide', -this.rangeValueX - x, this);
+                }
+                if(y > 0){
+                    this.$emit('exceedTopSide', y, this);
+                }
+                if(y < -this.rangeValueY){
+                    this.$emit('exceedBottomSide', -this.rangeValueY - y, this);
+                }
+                if(x <= 0 && x >= -this.rangeValueX){
+                    this.arrivalsLeftFlag = true;
+                    this.arrivalsRightFlag = true;
+                }
+                if(y <= 0 && y >= -this.rangeValueY){
+                    this.arrivalsTopFlag = true;
+                    this.arrivalsBottomFlag = true;
+                }
+            },
+            setTimeCompulsoryTranslateXY: function (time, x, y) {
+                this.setTransitionDuration(time);
+                this.setCompulsoryTranslateXY(x, y);
+            },
+            /**
+             * 外部调用移动事件，根setTimeCompulsoryTranslateXY的区别是这个
+             * 函数不产事件，防止：Maximum call stack size exceeded
+             * 超出最大呼叫堆栈大小,并禁止松手调用函数
+             * @param time
+             * @param x
+             * @param y
+             */
+            externalSetTranslateXY: function (time, x, y) {
+                this.letGoFlag = false;
+                this.setTransitionDuration(time);
+                this.setCompulsoryTranslateXY(x, y, true);
+            },
+
+            setTimeTranslateXY: function (time, x, y) {
+                this.setTransitionDuration(time);
+                this.setTranslateXY(x, y);
+            },
+            //计算x,y超出数值
+            disposeExceedData: function (value, rangeValue) {
+                let flag = false;
+                let t = 0;
+                let distance = 0;
+                if (value < -rangeValue) {
+                    flag = true;
+                    distance = -rangeValue;
+                    t = -rangeValue - value;
+                } else if (value > 0) {
+                    flag = true;
+                    t = value;
+                }
+                return {
+                    flag: flag,
+                    distance: distance,
+                    time: t,
+                    onePxTime: 1
+                };
+            },
+
+            disposeScrollData: function (arr) {
+                let last = arr[arr.length - 1];
+                let find;
+                for (let o of arr) {
+                    let time = last.time - o.time;
+                    if (time < this.limitTime) {
+                        find = {
+                            time: time,
+                            value: last.value - o.value
+                        };
+                        break;
+                    }
+                }
+                //计算移动宽度
+                let distance = find.value * this.multiple;
+                let onePxTime = Math.abs(find.value) / find.time;
+                //计算速度
+                let time = Math.abs(onePxTime * distance);
+                return {
+                    distance: distance,
+                    onePxTime: onePxTime,
+                    time: time < this.minTime ? this.minTime + 100 : time
+                }
+            },
+            resetPosition: function (x, y, time, onePxTime) {
+                setTimeout(() => {
+                    let t = onePxTime * this.boundaryAddValue;
+                    this.translateX = x;
+                    this.translateY = y;
+                    this.setTimeCompulsoryTranslateXY(t, x, y);
+                    this.setTimeTransitionDuration0(t);
+                }, time + 2);
+            },
+            disposeEdge: function (v, time, onePxTime) {
+                if (v > this.boundaryAddValue) {
+                    time -= (v - this.boundaryAddValue) * onePxTime;
+                } else {
+                    time += (this.boundaryAddValue - v) * onePxTime;
+                }
+                return time;
+            },
+            disposeScrollDataMobile: function (rangeValue, distance, time, onePxTime) {
+                let edgeValue = distance;
+                if (distance < -rangeValue) {
+                    time = this.disposeEdge(-rangeValue - distance, time, onePxTime);
+                    distance = -rangeValue - this.boundaryAddValue;
+                    edgeValue = -rangeValue;
+                } else if (distance > 0) {
+                    time = this.disposeEdge(distance, time, onePxTime, 0);
+                    distance = this.boundaryAddValue;
+                    edgeValue = 0;
+                }
+                return {
+                    distance: distance,
+                    time: time,
+                    edgeValue: edgeValue
+                }
+            },
+            disposeMobileData: function (arr, value, coordinate) {
+                arr.push({value: value, time: new Date().getTime()})
+                let v = value - coordinate;
+                return v
+            },
+            disposeUnilateralMode: function (value, sValue, xValue) {
+                if(!this.unilateralSelectFlag){
+                    if (this.scrollMode === 3 && this.unilateralMode) {
+                        if(sValue != xValue){
+                            this.scrollMode = value;
+                            this.unilateralSelectFlag = true;
+                        }
+                    }
+                }
+            },
+            disposeMobile: function (e) {
+                let unilateralValue = null;
+                if (this.ifCondition(2)) {
+                    let y = this.getEventY(e);
+                    unilateralValue = this.translateY;
+                    this.translateY += this.disposeMobileData(this.arrY, y, this.coordinateY)
+                    this.disposeUnilateralMode(2, unilateralValue, this.translateY);
+                    this.coordinateY = y;
+                }
+                if (this.ifCondition(1)) {
+                    let x = this.getEventX(e);
+                    unilateralValue = this.translateX;
+                    this.translateX += this.disposeMobileData(this.arrX, x, this.coordinateX)
+                    this.disposeUnilateralMode(1, unilateralValue, this.translateX);
+                    this.coordinateX = x;
+                }
+                this.setCompulsoryTranslateXY(this.translateX, this.translateY);
+            }
+        }
+    }
+</script>
+<style scoped>
+    .scroll {
+        user-select: none;
+    }
+
+    .container {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .content {
+        width: 100%;
+        height: 100%;
+        transition-property: all;
+        transition-timing-function: ease-out;
+    }
+</style>

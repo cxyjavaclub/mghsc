@@ -1,0 +1,181 @@
+<template>
+    <div class="goods-list">
+        <div :class="styleFlag == 0 ? 'horizontal-item' : 'vertical-item'" m-for="v in item" @click="goodsClick(v.productId)">
+            <img :src="v.productFirstImg">
+            <div class="item-message">
+                <h1>{{v.productName}}</h1>
+                <div m-if="v.productText || styleFlag == 0">{{v.productText ? v.productText : ''}}</div>
+                <div class="button-message">
+                    <p class="left">
+                        <b>￥{{v.price}}</b>
+                    </p>
+                    <p class="right" @click="addCart($event, $dom, v)">
+                        <img :src="v.addCartFlag ? icon.true : icon.false">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+    output = {
+        props:{
+            //非0时纵向显示，0横向显示
+            styleFlag:{
+                type: Number,
+                default: 1
+            },
+            icon:{
+                type: Object,
+                default: function(){
+                    return {
+                        true: '@/img/icon/购物车 (1).png',
+                        false: '@/img/icon/购物车.png'
+                    }
+                }
+            },
+            item:{
+                type: Array,
+                default: function() {
+                    return [
+                        // {
+                        //     productId: 0,
+                        //     productFirstImg: '@/img/1.jpg',
+                        //     productName: '华为畅想z1212121212jkjkfafafafafj',
+                        //     productText: '领卷最高减260 | 买赠好礼',
+                        //     price: 299,
+                        //     addCartFlag: true
+                        // }
+                    ]
+                }
+            }
+        },
+        mounted: function () {
+
+        },
+        methods: {
+            goodsClick: function (id) {
+                this.$router.goPath({path: '/goods-details', query: {id: id}})
+            },
+            setItem: function (item) {
+                this.item = item;
+            },
+            addCart: function (e, dom, obj) {
+                //没加如购物车
+                if(!obj.addCartFlag){
+                    $.get("/mghsc/cart/add-or-update", {productId: obj.productId},  (result) => {
+                        if(result.code == 200){
+                            obj.addCartFlag = true;
+                            alert('成功加入购物车');
+                            $(dom).children('img').attr('src', Main.path.pathDispose(this.icon.true));
+                        }
+                    }, 'json');
+                }else{
+                    alert('商品在购物车中了');
+                }
+                e.stopPropagation();
+            }
+        }
+    }
+</script>
+<style scoped>
+    .goods-list{
+        margin: auto;
+        overflow: hidden;
+    }
+
+    .horizontal-item{
+        width: 100%;
+        background-color: white;
+        border-radius: 5px;
+        margin-bottom: 8px;
+        height: 130px;
+        display: flex;
+    }
+
+    .horizontal-item > img{
+        height: 100%;
+        min-width: 120px;
+        max-width: 120px;
+        border-radius: 5px 0 0 5px;
+    }
+
+    .horizontal-item .item-message{
+        float: right;
+        flex: 2;
+    }
+    .horizontal-item .item-message h1, .horizontal-item .item-message div{
+        height: 40px;
+    }
+
+    .horizontal-item .item-message h1{
+        text-overflow: ellipsis;
+    }
+
+    .vertical-item{
+        width: 49%;
+        float: left;
+        border-radius: 5px;
+        margin: 0px 0.5% 10px 0.5%;
+        background-color: white;
+    }
+    .vertical-item > img{
+        width: 100%;
+        height: 200px;
+        border-radius: 5px 5px 0 0;
+    }
+    .item-message{
+        padding: 0 5px;
+        overflow: hidden;/*内容超出后隐藏*/
+    }
+    .item-message h1{
+        font-size: 18px;
+        /*内容超出后隐藏*/
+        /*overflow: hidden;*/
+        /* 超出内容显示为省略号*/
+        /*text-overflow: ellipsis;*/
+
+    }
+    .item-message h1, .item-message > div{
+        height: 35px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        /*文本不进行换行*/
+        white-space: nowrap;
+    }
+
+    .button-message{
+        position: relative;
+    }
+
+    .button-message p{
+        position: absolute;
+        bottom: 3px;
+    }
+
+    .button-message .left{
+        left: 0;
+        color: red;
+    }
+    .button-message .left > b{
+        display: block;
+        float: left;
+        font-size: 20px;
+    }
+    .button-message .right{
+        right: 0;
+        top: 0;
+        bottom: 5px;
+        display: flex;
+        height: 40px;
+        width: 40px;
+        text-align: right;
+        align-items: flex-end;
+    }
+
+    .button-message .right img{
+        width: 40px;
+        height: 40px;
+    }
+</style>

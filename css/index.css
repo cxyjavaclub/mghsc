@@ -1,0 +1,12 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.ccccccccc{
+    position: fixed;z-index: 200000;padding: 10px; left: 0; top: 0;background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    margin: auto;
+    border-radius: 5px;
+}

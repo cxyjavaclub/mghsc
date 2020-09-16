@@ -1,0 +1,114 @@
+<template>
+    <div class="address-management">
+        <nav-bar ref="fixedNavBarRef" title="地址管理" is-show="0" is-fixed="1"></nav-bar>
+        <nav-bar title="地址管理" style="margin: 10px auto;  border-radius: 10px; overflow: hidden; width: 100%;"></nav-bar>
+        <div style="display: none">
+            <address-box></address-box>
+        </div>
+        <div class="address-message" m-for="v in addrObj">
+            <address-box class="show-address" :message="v"></address-box>
+            <div class="operating">
+                <m-button @click="editAddress(v.addrId)"
+                          style="width: 80%; padding: 0; border: none; display: block; float: left; height: 30px; background-color: inherit;"
+                          text="编辑">
+                </m-button>
+            </div>
+        </div>
+        <m-button @click="addAddress"
+                  style="width: 100%; display: block; float: left; height: 40px; background-color: #67c23a;"
+                  text="新增地址">
+        </m-button>
+    </div>
+</template>
+<script>
+    let addressBox = input('@/component/common/addressbox/addressBox.main');
+    let mButton = input('@/component/common/mbutton/mButton.main');
+    let navBar = input('@/component/common/navbar/NavBar.main');
+    output = {
+        components:{
+            addressBox: addressBox,
+            mButton: mButton,
+            navBar: navBar,
+        },
+        data: function () {
+            return{
+                addrObj: []
+            }
+        },
+        created: function () {
+
+        },
+        activated: function () {
+            setTimeout(() => {
+                let show = this.$main.container.get('hideTarBar')
+                if(show){
+                    show();
+                }
+                this.scrollInit();
+                this.getData();
+            }, 10);
+        },
+        deactivated: function () {
+            $(window).unbind('scroll');
+        },
+        mounted: function () {
+        },
+        methods: {
+            addAddress: function () {
+                this.$router.goPath('/add-address');
+            },
+            editAddress: function (id) {
+                this.$router.goPath({path: '/add-address', query: {id: id}})
+            },
+            getData: function () {
+                let load = this.$loading();
+                $.get("/mghsc/addr/data",  (result) => {
+                    console.log(result)
+                    if(result.code == 200){
+                        let data = result.data;
+                        this.addrObj = data;
+                        this.$close(load);
+                    }
+                }, 'json');
+            },
+            scrollInit: function () {
+                let that = this;
+                $(window).scroll(function () {
+                    let top = $(document).scrollTop();
+                    if(top > 30){
+                        that.$refs.fixedNavBarRef.show();
+                    }else{
+                        that.$refs.fixedNavBarRef.hide();
+                    }
+                })
+            }
+        }
+    }
+</script>
+<style scoped>
+    .address-management{
+        width: 96%;
+        margin: 8px auto 60px auto;
+    }
+    .address-message{
+        display: flex;
+        background-color: white;
+        align-items: center;
+        border-radius: 10px;
+        margin-bottom: 8px;
+        width: 100%;
+    }
+
+    .address-message .show-address{
+        flex: 2;
+    }
+
+    .address-message .operating{
+        width: 50px;
+        height: 40px;
+        border-left: 1px solid #9b9b9b;
+        padding-left: 3px;
+        display: flex;
+        align-items: center;
+    }
+</style>

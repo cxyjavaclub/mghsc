@@ -1,0 +1,41 @@
+<template>
+    <div class="tar-bar" :style="{display: hideFlag ? 'none' : displayValue}">
+        <slot></slot>
+    </div>
+</template>
+<script>
+    output = {
+        data: function(){
+            return {
+                displayValue: 'flex',
+                hideFlag: false
+            }
+        },
+        mounted: function(){
+
+        },
+        methods:{
+            hide: function () {
+                this.hideFlag = true
+            },
+            show: function () {
+                this.hideFlag = false
+            }
+        }
+    }
+</script>
+<style scoped>
+    .tar-bar{
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 50px;
+        display: flex;
+        background-color: aqua;
+        text-align: center;
+        border-top: 1px solid #EEE;
+        background-color: #fff;
+        z-index: 1;
+    }
+</style>

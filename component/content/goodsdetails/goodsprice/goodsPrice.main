@@ -1,0 +1,47 @@
+<template>
+    <div class="goods-price">
+        <p class="price">￥<b>{{price}}</b></p>
+        <div class="expired-price">
+            <p>价格 <del>{{expiredPrice}}</del></p>
+        </div>
+    </div>
+</template>
+<script>
+    output = {
+        props: {
+            expiredPrice: {
+                type: String,
+                default: ''
+            },
+            price: {
+                type: String,
+                default: ''
+            }
+        },
+        methods:{
+            setData:function (price, expiredPrice) {
+                this.price = price;
+                this.expiredPrice = expiredPrice;
+            }
+        }
+    }
+</script>
+<style scoped>
+    .goods-price{
+        overflow: hidden;
+    }
+
+    .goods-price > .price{
+        color: red;
+        font-size: 20px;
+    }
+    .goods-price > p > b{
+        font-size: 25px;
+    }
+
+    .goods-price .expired-price{
+        font-size: 14px;
+        margin: 10px 5px;
+        color: #9b9b9b;
+    }
+</style>

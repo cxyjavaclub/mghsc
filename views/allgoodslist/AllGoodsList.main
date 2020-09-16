@@ -1,0 +1,41 @@
+<template>
+    <div style="margin-bottom: 50px;">
+        <div style="overflow: hidden; width: 98%; margin: 10px auto;">
+            <search></search>
+        </div>
+        <goods-list ref="goodsList" style="margin: 8px 2%; width: 96%;"
+                    style-flag="0">
+        </goods-list>
+    </div>
+</template>
+<script>
+    let goodsList = input('@/component/content/goodslist/goodsList.main');
+    let search = input('@/component/content/homesearch/search.main')
+    output = {
+        components: {
+            goodsList: goodsList,
+            search:search,
+        },
+        activated: function () {
+            setTimeout(() => {
+                let show = this.$main.container.get('showTarBar')
+                if(show){
+                    show();
+                }
+            }, 10);
+        },
+        created: function () {
+            let load = this.$loading();
+            $.get("/mghsc/product/page-reveal-data", {pageType: 'home'},  (result) => {
+                if(result.code == 200){
+                    // console.log(result)
+                    this.$refs.goodsList.setItem(result.data.records);
+                    this.$close(load);
+                }
+            }, 'json');
+        }
+    }
+</script>
+<style scoped>
+
+</style>
